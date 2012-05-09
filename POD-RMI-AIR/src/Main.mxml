@@ -1,16 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:WindowedApplication xmlns:fx="http://ns.adobe.com/mxml/2009" 
-			   xmlns:s="library://ns.adobe.com/flex/spark" 
-			   xmlns:mx="library://ns.adobe.com/flex/mx" 
-			   minWidth="955" minHeight="600"
-			   creationComplete="inicializar(event)" xmlns:flerry="net.riaspace.flerry.*">
+<s:WindowedApplication xmlns:fx="http://ns.adobe.com/mxml/2009"
+					   xmlns:s="library://ns.adobe.com/flex/spark"
+					   xmlns:mx="library://ns.adobe.com/flex/mx"
+					   xmlns:flerry="net.riaspace.flerry.*"
+					   minWidth="955" minHeight="600" backgroundColor="#FFFFFF"
+					   creationComplete="inicializar(event)">
+	<fx:Style source="br/com/hotel/css/padrao.css"/>
+	<fx:Script source="br/com/hotel/util/asFuncoes.as" />
 	<fx:Script>
 		<![CDATA[
+			import br.com.hotel.util.Imagens;
+			import br.com.hotel.util.Imagens;
+			
 			import mx.events.FlexEvent;
 			import mx.rpc.events.ResultEvent;
 			
-			protected function inicializar(event:FlexEvent):void
-			{
+			protected function inicializar(event:FlexEvent):void{
 			}
 			
 		]]>
@@ -21,4 +26,23 @@
 				
 		</flerry:NativeObject>
 	</fx:Declarations>
+	<mx:TabNavigator x="0" y="29" width="100%" height="117">
+		<s:NavigatorContent width="100%" height="100%" label="Cadastros">
+			<mx:LinkButton x="5.5" y="10" height="58" 
+						   label="Cadastro Hospedes"  click="{abrirPrincipalHospede()}" 
+						   icon="{Imagens.link_hospedes}"
+						   labelPlacement="bottom" textDecoration="none" />
+			<mx:LinkButton x="142.5" y="10" height="58" label="Cadastro de Reservas"
+						   click="{abrirPrincipalReserva()}" icon="{Imagens.link_hotel}"
+						   labelPlacement="bottom" textDecoration="none"/>
+		</s:NavigatorContent>
+		<s:NavigatorContent width="100%" height="100%" label="Configurações">
+			<mx:LinkButton x="10.5" y="10" height="58"
+						   label="Cadastro Hoteis" click="{abrirPrincipalHotel()}"
+						   icon="{Imagens.link_hotel}" labelPlacement="bottom" textDecoration="none"/>
+			<mx:LinkButton x="126.5" y="10" height="58" label="Cadastro Quartos"
+						   click="{abrirPrincipalQuarto()}" icon="{Imagens.link_hotel}"
+						   labelPlacement="bottom" textDecoration="none"/>
+		</s:NavigatorContent>
+	</mx:TabNavigator>
 </s:WindowedApplication>

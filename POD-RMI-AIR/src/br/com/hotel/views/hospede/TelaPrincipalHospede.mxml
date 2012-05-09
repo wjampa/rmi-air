@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx" 
+				layout="absolute" width="710" height="504" 
+				title="Principal Hospedes" 
+				close="FlexGlobals.topLevelApplication.fechar(this)"
+				showCloseButton="true"
+				creationComplete="inicializar(event)" xmlns:flerry="net.riaspace.flerry.*">
+	<fx:Script>
+		<![CDATA[
+			import br.com.hotel.modelo.Hospede;
+			import br.com.hotel.util.Imagens;
+			
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.core.FlexGlobals;
+			import mx.events.FlexEvent;
+			import mx.rpc.events.ResultEvent;
+			[Bindable]
+			public var hospedeSelecionado:Hospede = new Hospede();
+			[Bindable]
+			public var hospedes:ArrayCollection = new ArrayCollection();
+			
+			public var cpfAnterior:String = new String();
+			
+			protected function inicializar(event:FlexEvent):void
+			{
+				desabilitaCampos();
+				
+			}
+			public function habilitaCampos():void{
+				//campoNome.enabled = true;
+				campoEndereco.enabled = true;
+				campoTelefone.enabled = true;
+				//campoCPF.enabled = true;
+				campoNumero.enabled = true;
+				btGravar.enabled = true;
+			}
+			public function desabilitaCampos():void{
+				//campoNome.enabled = false;
+				campoEndereco.enabled = false;
+				campoTelefone.enabled = false;
+				//campoCPF.enabled = false;
+				campoNumero.enabled = false;
+				btGravar.enabled = false;
+			}
+
+			protected function getGravarHospedeResultHandler(event:ResultEvent):void
+			{
+				if(event.result==null){
+					Alert.show("Hospede Não Gravado","ATENÇÃO");
+				}else{
+					hospedes.removeAll();
+					hospedeControle.getHospedes();		
+				}
+
+			}
+			public function buscarHospede():void{
+				hospedes.removeAll();
+				if(campoNome.text!="" && campoCPF.text!=""){
+					Alert.show("A BUSCA SÓ PODE SER REALIZADA POR CPF OU PELO NOME DO HOSPEDE!","ATENÇÃO");
+				}else if(campoCPF.text.length>2){
+					hospedeControle.buscarHospedeCPF(campoCPF.text);
+				}else if(campoNome.text.length>0){
+					hospedeControle.buscarHospedeNome(campoNome.text);
+					campoNome.text = "";
+				}
+			}
+
+			protected function adicionarHospede(event:MouseEvent):void
+			{
+				var hospede:Hospede = capiturarDadosFormulario();
+				hospedes.removeAll();
+				if(btGravar.label == "Gravar")
+					hospedeControle.adicionarHospede(hospede);
+				else
+					hospedeControle.alterarHospede(cpfAnterior,hospede);
+				desabilitaCampos();
+				btGravar.label = "Gravar";
+			}
+			public function capiturarDadosFormulario():Hospede{
+				var hospede:Hospede = new Hospede();
+				hospede.nome = campoNome.text;
+				hospede.cpf = campoCPF.text;
+				hospede.endereco = campoEndereco.text;
+				hospede.numero = campoNumero.text;
+				hospede.telefone = campoTelefone.text;
+				return hospede;	
+			}
+			protected function seila_resultHandler(event:ResultEvent):void
+			{
+				// TODO Auto-generated method stub
+				Alert.show(event.result.toString());
+			}
+			
+			protected function selecionarHospede():void
+			{
+				hospedeSelecionado = dghospedes.selectedItem as Hospede;
+				desabilitaCampos();
+			}
+			public function getListHospedesResult(event:ResultEvent):void{
+				hospedes = event.result as ArrayCollection;
+			}
+			public function getListHospedesCPFResult(event:ResultEvent):void{
+				
+				if(event.result != null){
+					var hospede:Hospede = event.result as Hospede;
+					hospedes.addItem(hospede);
+				}else{
+					Alert.show("Hospde não encontrado!","ATENÇÃO");
+				}
+			}
+			
+			protected function alterarHospede(event:MouseEvent):void{
+				cpfAnterior = campoCPF.text;
+				btGravar.label = "Alterar";
+				habilitaCampos();
+			}
+			public function confirmarSelecaoHospede():void{
+				FlexGlobals.topLevelApplication.objHospedeSelecionado = dghospedes.selectedItem as Hospede;
+				FlexGlobals.topLevelApplication.fechar(this);
+			}
+			public function getExcluirHospdeResult(event:ResultEvent):void{
+				limparCampos();
+				if(event.result){
+					Alert.show("Hospede Excluido com Sucesso!","ATENÇÃO");
+				}else{
+					Alert.show("Hospede NÃO EXCLUIDO","ATENÇÃO");
+				}
+			}
+			public function excluirHospede():void{
+				hospedes.removeAll();
+				hospedeControle.excluirHospede(hospedeSelecionado);
+			}
+			public function limparCampos():void{
+				campoNome.text = "";
+				campoEndereco.text = "";
+				campoTelefone.text = "";
+				campoCPF.text = "";
+				campoNumero.text = "";
+			}
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<flerry:NativeObject id="hospedeControle" source="br.com.hoteishilton.controle.HospedeControle"
+							 fault="FlexGlobals.topLevelApplication.onFault(event)"
+							 singleton="true">
+			
+			<flerry:NativeMethod id="getGravarHospede" name="adicionarHospede" result="getGravarHospedeResultHandler(event)"/>
+			<flerry:NativeMethod id="getListHospede" name="getHospedes" result="getListHospedesResult(event)"/>
+			<flerry:NativeMethod id="getListHospedeCPF" name="buscarHospedeCPF" result="getListHospedesCPFResult(event)"/>
+			<flerry:NativeMethod id="getListHospedeNome" name="buscarHospedeNome" result="getListHospedesResult(event)"/>
+			<flerry:NativeMethod id="getAletartHospede" name="alterarHospede" result="getListHospedesCPFResult(event)"/>
+			<flerry:NativeMethod id="getExcluirHospede" name="excluirHospede" result="getExcluirHospdeResult(event)"/>
+		</flerry:NativeObject>
+	</fx:Declarations>
+	<mx:Label x="14" y="11" text="Nome:" height="17"/>
+	<mx:TextInput 
+		x="13" y="28" width="361" id="campoNome" text="{hospedeSelecionado.nome}"/>
+	<mx:Label x="385" y="10" text="CPF:"/>
+	<mx:TextInput x="387" y="28" id="campoCPF" text="{hospedeSelecionado.cpf}"/>
+	<mx:Label x="12" y="58" text="Endereco:"/>
+	<mx:TextInput x="13" y="78" id="campoEndereco" width="270" text="{hospedeSelecionado.endereco}"/>
+	<mx:Label x="303" y="58" text="Numero:"/>
+	<mx:TextInput x="303" y="78" width="58" id="campoNumero" text="{hospedeSelecionado.numero}"/>
+	<mx:Label x="384" y="58" text="Telefone:"/>
+	<mx:TextInput x="387" y="78" id="campoTelefone" text="{hospedeSelecionado.telefone}"/>
+	<mx:DataGrid 
+		id="dghospedes"
+		change="selecionarHospede()"
+		click="selecionarHospede()"
+		dataProvider="{hospedes}"
+		x="12" y="158" width="668" height="276">
+		<mx:columns>
+			<mx:DataGridColumn headerText="Hospede" dataField="nome"/>
+			<mx:DataGridColumn headerText="CPF" dataField="cpf"/>
+			<mx:DataGridColumn headerText="Telefone" dataField="telefone"/>
+		</mx:columns>
+	</mx:DataGrid>
+	<mx:Label x="10" y="136" text="Lista de Hospedes"/>
+	<mx:HRule x="13" y="151" width="667"/>
+	<mx:Button id="btNovo" x="14" y="110" width="83" label="Novo" click="habilitaCampos()"
+			   icon="{Imagens.adicionar}"/>
+	<mx:Button id="btBuscar" x="555" y="28" width="115" label="Buscar" click="buscarHospede()"
+			   icon="{Imagens.localizar}"/>
+	<mx:Button id="btGravar" x="555" y="78" width="115" label="Gravar"
+			   click="adicionarHospede(event)" icon="{Imagens.confirmar}"/>
+	<mx:Button 
+		id="btAlterar" x="105" y="110" 
+		width="94" label="Alterar" 
+		click="alterarHospede(event)"
+		icon="{Imagens.alterar}"/>
+	<mx:Button 
+		id="btExcluir" x="207" y="110" width="92"
+		label="Excluir" icon="{Imagens.excluir}"
+		click="excluirHospede()"/>
+	<mx:Button 
+		id="btConfirmar" x="307" y="110" 
+		width="109" label="Confirmar" 
+		icon="{Imagens.confirmar}"/>
+	
+</mx:TitleWindow>
