@@ -33,6 +33,7 @@
 			<flerry:NativeMethod id="getAlterarHospede" name="alterarHospede"/>
 			<flerry:NativeMethod id="getExcluirHospede" name="excluirHospede"/>
 		</flerry:NativeObject>
+	
 		<flerry:NativeObject id="hotelControle" source="br.com.hotel.controle.HotelControle"
 							 fault="FlexGlobals.topLevelApplication.onFault(event)"
 							 singleton="true">

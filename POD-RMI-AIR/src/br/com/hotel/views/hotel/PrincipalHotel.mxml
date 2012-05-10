@@ -11,6 +11,7 @@
 			import br.com.hotel.util.Imagens;
 			
 			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
 			import mx.core.FlexGlobals;
 			import mx.rpc.events.ResultEvent;
 			public var h:Hotel = new Hotel();
@@ -46,6 +47,28 @@
 				btExcluir.enabled = false;
 			}
 			
+			protected function excluirHotel(event:MouseEvent):void
+			{
+				h = dgHoteis.selectedItem as Hotel;
+				FlexGlobals.topLevelApplication.setExcluirHotel.addEventListener(ResultEvent.RESULT,excluirHotelResult);				
+				FlexGlobals.topLevelApplication.hotelControle.excluirHotel(h);				
+			}
+			protected function excluirHotelResult(event:ResultEvent):void{
+				if(event.result){
+					var id:int = dgHoteis.selectedIndex;
+					dpHoteis.removeItemAt(id);
+					Alert.show("Hotel excuilido com sucesso!","ATENÇÃO");
+				}
+			}
+			
+			protected function alterarHotel(event:MouseEvent):void
+			{
+				FlexGlobals.topLevelApplication.objHotelSelecionado = dgHoteis.selectedItem as Hotel;
+				FlexGlobals.topLevelApplication.abrirNovoHotel();
+				FlexGlobals.topLevelApplication.novoHotel.btGravar.label = "Alterar";
+				
+			}
+			
 		]]>
 	</fx:Script>
 	<fx:Declarations>
@@ -66,6 +89,7 @@
 		id="btBuscar" x="581" y="15" width="97" 
 		label="Buscar" icon="{Imagens.localizar}"/>
 	<util:RowColorDataGrid 
+		id="dgHoteis"
 		itemClick="habilitarBotoes()"
 		itemFocusIn="habilitarBotoes()"
 		dataProvider="{dpHoteis}"
@@ -90,9 +114,17 @@
 		<mx:Button 
 			id="btNovo" x="10" y="10" width="89" 
 			label="Novo" icon="{Imagens.adicionar}"
-			click="FlexGlobals.topLevelApplication.abrirNovoHotel()"/>
-		<mx:Button id="btAlterar" x="108" y="10" width="89" label="Alterar" icon="{Imagens.alterar}"/>
-		<mx:Button id="btExcluir" x="207" y="10" width="89" label="Excluir" icon="{Imagens.excluir}"/>
+			click="{
+				FlexGlobals.topLevelApplication.abrirNovoHotel();
+				FlexGlobals.topLevelApplication.objHotelSelecionado = new Hotel();}"/>
+		<mx:Button 
+			id="btAlterar" x="108" y="10" width="89" 
+			label="Alterar" icon="{Imagens.alterar}"
+			click="alterarHotel(event)"/>
+		<mx:Button 
+			id="btExcluir" x="207" y="10" width="89" 
+			label="Excluir" icon="{Imagens.excluir}"
+			click="excluirHotel(event)"/>
 	</mx:Canvas>
 	<s:Label x="10" y="54" text="Lista de Hoteis"/>
 	<mx:HRule x="10" y="72" width="670" height="2"/>
