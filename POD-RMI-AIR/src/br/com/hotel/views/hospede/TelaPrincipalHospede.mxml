@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
-				xmlns:s="library://ns.adobe.com/flex/spark" 
-				xmlns:mx="library://ns.adobe.com/flex/mx" 
-				layout="absolute" width="710" height="504" 
-				title="Principal Hospedes" 
-				close="FlexGlobals.topLevelApplication.fechar(this)"
-				showCloseButton="true"
-				creationComplete="inicializar(event)" xmlns:flerry="net.riaspace.flerry.*">
+<mx:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009"
+				xmlns:s="library://ns.adobe.com/flex/spark"
+				xmlns:mx="library://ns.adobe.com/flex/mx"
+				xmlns:flerry="net.riaspace.flerry.*"
+				xmlns:controls="com.flexpernambuco.controls.*"
+				width="710" height="504" close="FlexGlobals.topLevelApplication.fechar(this)"
+				creationComplete="inicializar(event)" layout="absolute" showCloseButton="true"
+				title="Principal Hospedes">
 	<fx:Script>
 		<![CDATA[
 			import br.com.hotel.modelo.Hospede;
@@ -72,10 +72,13 @@
 			{
 				var hospede:Hospede = capiturarDadosFormulario();
 				hospedes.removeAll();
-				if(btGravar.label == "Gravar")
-					hospedeControle.adicionarHospede(hospede);
-				else
+				if(btGravar.label == "Gravar"){
+					
+					FlexGlobals.topLevelApplication.hospedeControle.adicionarHospede(hospede);
+					FlexGlobals.topLevelApplication.getGravarHospede.addEventListener(ResultEvent.RESULT,getGravarHospedeResultHandler);
+				}else{
 					hospedeControle.alterarHospede(cpfAnterior,hospede);
+				}
 				desabilitaCampos();
 				btGravar.label = "Gravar";
 			}
@@ -143,11 +146,11 @@
 		]]>
 	</fx:Script>
 	<fx:Declarations>
-		<flerry:NativeObject id="hospedeControle" source="br.com.hoteishilton.controle.HospedeControle"
+		<flerry:NativeObject id="hospedeControle" source="br.com.hotel.controle.HospedeControle"
 							 fault="FlexGlobals.topLevelApplication.onFault(event)"
 							 singleton="true">
 			
-			<flerry:NativeMethod id="getGravarHospede" name="adicionarHospede" result="getGravarHospedeResultHandler(event)"/>
+			<flerry:NativeMethod id="getGravarHospede" name="adicionarHospede"/>
 			<flerry:NativeMethod id="getListHospede" name="getHospedes" result="getListHospedesResult(event)"/>
 			<flerry:NativeMethod id="getListHospedeCPF" name="buscarHospedeCPF" result="getListHospedesCPFResult(event)"/>
 			<flerry:NativeMethod id="getListHospedeNome" name="buscarHospedeNome" result="getListHospedesResult(event)"/>
@@ -199,5 +202,5 @@
 		id="btConfirmar" x="307" y="110" 
 		width="109" label="Confirmar" 
 		icon="{Imagens.confirmar}"/>
-	
+
 </mx:TitleWindow>

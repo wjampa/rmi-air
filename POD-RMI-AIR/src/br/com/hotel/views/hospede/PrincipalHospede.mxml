@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009"
+				xmlns:s="library://ns.adobe.com/flex/spark"
+				xmlns:mx="library://ns.adobe.com/flex/mx"
+				xmlns:util="br.com.hotel.util.*"
+				creationComplete="inicializarTela(event)"
+				width="714" height="430" close="FlexGlobals.topLevelApplication.fechar(this)"
+				layout="absolute" showCloseButton="true" title="Prinicpal Hospede">
+	<fx:Script>
+		<![CDATA[
+			import br.com.hotel.modelo.Hospedagem;
+			import br.com.hotel.modelo.Hospede;
+			import br.com.hotel.util.Imagens;
+			
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.core.FlexGlobals;
+			import mx.events.FlexEvent;
+			import mx.events.ListEvent;
+			import mx.rpc.events.ResultEvent;
+			[Bindable]
+			public var dpHospedes:ArrayCollection = new ArrayCollection();
+			
+			
+			protected function buscarHospde(event:MouseEvent):void
+			{
+				if(campoNome.text != ''){
+					FlexGlobals.topLevelApplication.getListHospedeNome.addEventListener(ResultEvent.RESULT,buscarHospdeResult);
+					FlexGlobals.topLevelApplication.hospedeControle.buscarHospedeNome(campoNome.text);
+					
+				}else if(campoCPF.text != '___.___.___-__'){
+					FlexGlobals.topLevelApplication.getListHospedeCPF.addEventListener(ResultEvent.RESULT,buscarHospdeResult);
+					FlexGlobals.topLevelApplication.hospedeControle.buscarHospedeCPF(campoCPF.text);
+						
+				}else{
+					Alert.show("Necessário o preenchimento do campo \"Nome\" ou \"CPF\"","ATENÇÃO!");
+				}
+			}
+			protected function buscarHospdeResult(event:ResultEvent):void{
+				dpHospedes.removeAll();
+				desabilitarBotoes();
+				if(event.result as Hospede)
+					dpHospedes.addItem(event.result);
+				else
+					dpHospedes = event.result as ArrayCollection;
+			}
+			
+			protected function habilitarBotoes():void
+			{
+				btAlterar.enabled = true;
+				btExcluir.enabled = true;
+			}
+			protected function desabilitarBotoes():void
+			{
+				btAlterar.enabled = false;
+				btExcluir.enabled = false;
+			}
+			
+			
+			protected function inicializarTela(event:FlexEvent):void
+			{
+				desabilitarBotoes();
+			}
+			
+			protected function excluirHospede(event:MouseEvent):void
+			{
+				var hospede:Hospede = dgHospedes.selectedItem as Hospede;
+				var idLista:int = dgHospedes.selectedIndex;
+				FlexGlobals.topLevelApplication.getExcluirHospede.addEventListener(ResultEvent.RESULT,excluirHospdeResult);
+				FlexGlobals.topLevelApplication.hospedeControle.excluirHospede(hospede);
+				
+				dpHospedes.removeItemAt(idLista);
+			}
+			protected function excluirHospdeResult(event:ResultEvent):void{
+				if(event.result){
+					Alert.show("Hospede Excluido com sucesso!","ATENÇÃO");
+				}
+			}
+			
+			protected function alterarHospede(event:MouseEvent):void
+			{
+				FlexGlobals.topLevelApplication.objHospedeSelecionado = dgHospedes.selectedItem as Hospede;
+				FlexGlobals.topLevelApplication.abrirNovoHospede();
+				FlexGlobals.topLevelApplication.novoHospede.btGravar.label = 'Alterar';
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<util:MasterTextInput 
+		text="{FlexGlobals.topLevelApplication.objHospedeSelecionado.nome}"
+		id="campoNome" x="10" y="28" 
+		width="359" focusIn="{campoCPF.text = ''}"/>
+	<s:Label x="10" y="10" text="Nome Hospede:" />
+	<util:MasterTextInput 
+		id="campoCPF" x="391" y="27" 
+		inputMask="999.999.999-99" focusIn="{campoNome.text = ''}"/>
+	<s:Label x="391" y="10" text="CPF:"/>
+	<mx:Button 
+		icon="{Imagens.localizar}"
+		id="btBuscar" x="571" y="26" 
+		width="94" label="Buscar"
+		click="buscarHospde(event)"/>
+	<util:RowColorDataGrid x="10" y="80"
+						   id="dgHospedes"
+						   dataProvider="{dpHospedes}"
+						   width="674"
+						   height="246.35"
+						   itemClick="habilitarBotoes()"
+						   itemFocusIn="habilitarBotoes()"
+						   >
+		<util:columns>
+			<mx:DataGridColumn headerText="CPF" width="120"
+							   dataField="cpf"
+							/>
+			<mx:DataGridColumn headerText="Nome do Hospede"
+							   dataField="nome"
+							/>
+			<mx:DataGridColumn headerText="Telefone" width="100"
+							   dataField="telefone"
+							/>
+		</util:columns>
+	</util:RowColorDataGrid>
+	<s:Label x="10" y="58" height="14" text="Lista de Hospedes"/>
+	<mx:HRule x="9" y="70" width="675" height="2"/>
+	<mx:Canvas x="0" y="349" width="694" height="41" backgroundColor="#FFFFFF" borderColor="#FFFFFF"
+			   borderStyle="none">
+		<mx:Button 
+			icon="{Imagens.cancelar}"
+			id="btFecha" x="590" y="11" 
+			width="94" label="Fechar" click="FlexGlobals.topLevelApplication.fechar(this)"/>
+		<mx:Button 
+			icon="{Imagens.adicionar}"
+			id="btNovo" x="16" y="11" 
+			width="94" label="Novo" 
+			click="{
+			FlexGlobals.topLevelApplication.abrirNovoHospede();
+			FlexGlobals.topLevelApplication.objHospedeSelecionado = new Hospede();}"/>
+		<mx:Button 
+			icon="{Imagens.alterar}"
+			id="btAlterar" x="116" y="11" 
+			width="94" label="Alterar" click="alterarHospede(event)"/>
+		<mx:Button 
+			icon="{Imagens.excluir}"
+			id="btExcluir" x="216" y="11" 
+			width="94" label="Excluir" click="excluirHospede(event)"/>
+		<mx:Button 
+			icon="{Imagens.confirmar}"
+			id="btConfirmar" x="316" y="11" 
+			width="118" label="Confirmar"/>
+	</mx:Canvas>
+</mx:TitleWindow>

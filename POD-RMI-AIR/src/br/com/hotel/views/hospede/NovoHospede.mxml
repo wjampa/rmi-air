@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009"
+				xmlns:s="library://ns.adobe.com/flex/spark"
+				xmlns:mx="library://ns.adobe.com/flex/mx"
+				xmlns:comp="br.com.hotel.util.*"
+				width="644" height="188" close="FlexGlobals.topLevelApplication.fechar(this)"
+				layout="absolute" showCloseButton="true" title="Cadastro de Hospedes">
+	<fx:Script>
+		<![CDATA[
+			import br.com.hotel.modelo.Hospede;
+			import br.com.hotel.util.Imagens;
+			
+			import mx.controls.Alert;
+			import mx.core.FlexGlobals;
+			import mx.rpc.events.ResultEvent;
+			
+			import spark.components.Application;
+			[Bindable]
+			public var hospede:Hospede = new Hospede();
+			
+			protected function gravarHospede(event:MouseEvent):void
+			{
+				var cpfAnterior:String = FlexGlobals.topLevelApplication.objHospedeSelecionado.cpf;
+				if(btGravar.label != 'Alterar'){
+					FlexGlobals.topLevelApplication.getGravarHospede.addEventListener(ResultEvent.RESULT,adicionarHospedeResult);
+					FlexGlobals.topLevelApplication.hospedeControle.adicionarHospede(pegarDadosFormulario());
+				}else{
+					FlexGlobals.topLevelApplication.getAlterarHospede.addEventListener(ResultEvent.RESULT,alterarHospedeResult);
+					FlexGlobals.topLevelApplication.hospedeControle.alterarHospede(cpfAnterior,pegarDadosFormulario());
+				}
+			}
+			
+			public function adicionarHospedeResult(event:ResultEvent):void{
+				FlexGlobals.topLevelApplication.objHospedeSelecionado = event.result as Hospede;
+				Alert.show("Hospede Cadastrado com Sucesso!","ATENÇÃO");
+				FlexGlobals.topLevelApplication.fechar(this);
+			}
+			public function alterarHospedeResult(event:ResultEvent):void{
+				FlexGlobals.topLevelApplication.objHospedeSelecionado = event.result as Hospede;
+				Alert.show("Hospede Atualizado com sucesso!","ATENÇÃO");
+				FlexGlobals.topLevelApplication.fechar(this);
+			}
+			public function pegarDadosFormulario():Hospede{
+				hospede.nome = campoNome.text;
+				hospede.cpf = campoCPF.text;
+				hospede.endereco = campoEndereco.text;
+				hospede.numero = campoNumero.text;
+				hospede.telefone = campoTelefone.text;
+				return hospede;
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<comp:MasterTextInput 
+		text="{FlexGlobals.topLevelApplication.objHospedeSelecionado.nome}"
+		id="campoNome" x="24" y="25" 
+		width="363" nextFocusOnEnter="true"/>
+	<s:Label x="24" y="7" text="Nome Hospde:"/>
+	<s:Label x="416" y="7" text="CPF:"/>
+	<comp:MasterTextInput 
+		fullText="{FlexGlobals.topLevelApplication.objHospedeSelecionado.cpf}"
+		inputMask="999.999.999-99"
+		id="campoCPF" x="412" y="25" width="163" blankMaskChar=" "
+		 nextFocusOnEnter="true"/>
+	<s:Label x="24" y="55" text="Endereco:"/>
+	<comp:MasterTextInput
+		text="{FlexGlobals.topLevelApplication.objHospedeSelecionado.endereco}"
+		id="campoEndereco" x="24" y="73" width="303" nextFocusOnEnter="true"/>
+	<s:Label x="365" y="54" text="Número:"/>
+	<comp:MasterTextInput 
+		text="{FlexGlobals.topLevelApplication.objHospedeSelecionado.numero}"
+		id="campoNumero" x="365" y="73" width="61" nextFocusOnEnter="true"/>
+	<s:Label x="450" y="55" text="Telefone:"/>
+	<comp:MasterTextInput 
+		fullText="{FlexGlobals.topLevelApplication.objHospedeSelecionado.telefone}"
+		id="campoTelefone" x="454" y="73" width="117" blankMaskChar=" "
+		inputMask="(99)9999-9999" nextFocusOnEnter="true"/>
+	<mx:Canvas x="0" y="103" width="624" height="45">
+		<mx:Button id="btFechar" x="528" y="10" width="86" label="Fechar"
+				   icon="{Imagens.cancelar}"
+				   click="FlexGlobals.topLevelApplication.fechar(this)"/>
+		<mx:Button id="btGravar" x="411" y="10" width="103" label="Gravar"
+				   icon="{Imagens.confirmar}"
+				   click="gravarHospede(event)"/>
+	</mx:Canvas>
+</mx:TitleWindow>

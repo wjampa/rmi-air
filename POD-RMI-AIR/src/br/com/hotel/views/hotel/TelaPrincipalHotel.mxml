@@ -109,7 +109,7 @@
 		]]>
 	</fx:Script>
 	<fx:Declarations>
-		<flerry:NativeObject id="hotelControle" source="br.com.hoteishilton.controle.HotelControle"
+		<flerry:NativeObject id="hotelControle" source="br.com.hotel.controle.HotelControle"
 							 fault="FlexGlobals.topLevelApplication.onFault(event)"
 							 singleton="true">
 			

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009"
+				xmlns:s="library://ns.adobe.com/flex/spark"
+				xmlns:mx="library://ns.adobe.com/flex/mx"
+				xmlns:util="br.com.hotel.util.*"
+				width="710" height="422" close="FlexGlobals.topLevelApplication.fechar(this)"
+				layout="absolute" showCloseButton="true" title="Principal Hoteis">
+	<fx:Script>
+		<![CDATA[
+			import br.com.hotel.util.Imagens;
+			
+			import mx.core.FlexGlobals;
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<s:Label x="11" y="21" text="Código:"/>
+	<s:Label x="140" y="20" text="Nome do Hotel:"/>
+	<util:MasterTextInput id="campoCodigo" x="59" y="16" width="71"/>
+	<util:MasterTextInput id="campoNome" x="236" y="16" width="329"/>
+	<mx:Button id="btBuscar" x="581" y="15" width="97" label="Buscar" icon="{Imagens.localizar}"/>
+	<util:RowColorDataGrid x="10" y="84" width="670" height="248">
+		<util:columns>
+			<mx:DataGridColumn headerText="Código" width="120"
+							   dataField="codigo"
+							   />
+			<mx:DataGridColumn headerText="Nome do Hotel"
+							   dataField="nome"
+							   />
+			<mx:DataGridColumn headerText="Gerente" width="100"
+							   dataField="gerente"
+							   />
+			<mx:DataGridColumn headerText="Telefone" width="100"
+							   dataField="telefone"
+							   />
+		</util:columns>
+	</util:RowColorDataGrid>
+	<mx:Canvas x="0" y="340" width="690" height="42">
+		<mx:Button id="btFechar" x="590" y="10" width="89" label="Fechar" icon="{Imagens.cancelar}"/>
+		<mx:Button id="btNovo" x="10" y="10" width="89" label="Novo" icon="{Imagens.adicionar}"/>
+		<mx:Button id="btAlterar" x="227" y="9" width="89" label="Alterar" icon="{Imagens.alterar}"/>
+		<mx:Button id="btExcluir" x="120" y="9" width="89" label="Excluir" icon="{Imagens.excluir}"/>
+	</mx:Canvas>
+	<s:Label x="10" y="54" text="Lista de Hoteis"/>
+	<mx:HRule x="10" y="72" width="670" height="2"/>
+</mx:TitleWindow>

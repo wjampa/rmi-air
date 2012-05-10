@@ -89,7 +89,7 @@
 		<s:State name="quarto"/>
 	</mx:states>
 	<fx:Declarations>
-		<flerry:NativeObject id="hotelControle" source="br.com.hoteishilton.controle.HotelControle"
+		<flerry:NativeObject id="hotelControle" source="br.com.hotel.controle.HotelControle"
 							 fault="FlexGlobals.topLevelApplication.onFault(event)"
 							 singleton="true" >
 			
@@ -98,7 +98,7 @@
 			<flerry:NativeMethod id="getHotel" name="buscarHotel" result="buscarHotelResultHandler(event)"/>
 			
 		</flerry:NativeObject>
-		<flerry:NativeObject id="quartoControle" source="br.com.hoteishilton.controle.QuartoControle"
+		<flerry:NativeObject id="quartoControle" source="br.com.hotel.controle.QuartoControle"
 							 fault="FlexGlobals.topLevelApplication.onFault(event)"
 							 singleton="true" debug="true">
 			<flerry:NativeMethod id="setAlterarQuarto" name="alterarQuarto" result="alterarQuartoResultHandler(event)"/>
