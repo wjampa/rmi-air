@@ -15,11 +15,18 @@
 			import mx.rpc.events.ResultEvent;
 			[Bindable]
 			public var hotel:Hotel = new Hotel();
-			
+			public var codigoAnterior:String;
 			protected function adicionarHotel(event:MouseEvent):void
 			{
-				FlexGlobals.topLevelApplication.getGravarHotel.addEventListener(ResultEvent.RESULT,adicionarHotelResult);
-				FlexGlobals.topLevelApplication.hotelControle.adicionarHotel(capturarCampos());
+				if(btGravar.label != 'Alterar'){
+					FlexGlobals.topLevelApplication.getGravarHotel.addEventListener(ResultEvent.RESULT,adicionarHotelResult);
+					FlexGlobals.topLevelApplication.hotelControle.adicionarHotel(capturarCampos());
+				}else{
+					codigoAnterior = FlexGlobals.topLevelApplication.objHotelSelecionado.codigo;
+					FlexGlobals.topLevelApplication.setAlterarHotel.addEventListener(ResultEvent.RESULT,adicionarHotelResult);
+					FlexGlobals.topLevelApplication.hotelControle.alterarHotel(codigoAnterior,capturarCampos());
+				
+				}
 			}
 			protected function adicionarHotelResult(event:ResultEvent):void{
 				if(event.result as Hotel){
@@ -47,15 +54,20 @@
 	<s:Label x="20" y="64" text="Endereco:"/>
 	<s:Label x="409" y="10" text="Gerente:"/>
 	<s:Label x="412" y="63" text="Telefone:"/>
-	<util:MasterTextInput 
+	<util:MasterTextInput
+		text="{FlexGlobals.topLevelApplication.objHotelSelecionado.codigo}"
 		id="campoCodigo" x="20" y="28" width="78" nextFocusOnEnter="true"/>
 	<util:MasterTextInput 
+		text="{FlexGlobals.topLevelApplication.objHotelSelecionado.nome}"
 		id="campoNome" x="122" y="28" width="269" nextFocusOnEnter="true"/>
 	<util:MasterTextInput 
+		text="{FlexGlobals.topLevelApplication.objHotelSelecionado.endereco}"
 		id="campoEndereco" x="20" y="82" width="371" nextFocusOnEnter="true"/>
 	<util:MasterTextInput 
+		text="{FlexGlobals.topLevelApplication.objHotelSelecionado.gerente}"
 		id="campoGerente" x="409" y="28" width="135" nextFocusOnEnter="true"/>
 	<util:MasterTextInput 
+		fullText="{FlexGlobals.topLevelApplication.objHotelSelecionado.telefone}"
 		id="campoTelefone" x="412" y="82" width="132" blankMaskChar=" "
 		inputMask="(99)9999-9999" nextFocusOnEnter="true"/>
 	<mx:Canvas x="0" y="133" width="554" height="41">
