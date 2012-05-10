@@ -1,9 +1,10 @@
-package br.com.hotel.servico;
+package br.com.hotel.rmi.cliente;
 
 import java.rmi.Naming;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
+import br.com.hotel.servico.IredeHoteleira;
 import br.com.hotel.util.Configuracao;
 
 

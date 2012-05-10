@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.hotel.modelo.Hotel;
+import br.com.hotel.rmi.cliente.Servico;
 import br.com.hotel.servico.IredeHoteleira;
-import br.com.hotel.servico.Servico;
 
 public class HotelControle {
 	private static IredeHoteleira servico;
