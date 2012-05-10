@@ -2,25 +2,74 @@
 <mx:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009"
 				xmlns:s="library://ns.adobe.com/flex/spark"
 				xmlns:mx="library://ns.adobe.com/flex/mx"
-				xmlns:util="br.com.hotel.util.*"
+				xmlns:util="br.com.hotel.util.*" creationComplete="desabilitarBotoes()"
 				width="710" height="422" close="FlexGlobals.topLevelApplication.fechar(this)"
 				layout="absolute" showCloseButton="true" title="Principal Hoteis">
 	<fx:Script>
 		<![CDATA[
+			import br.com.hotel.modelo.Hotel;
 			import br.com.hotel.util.Imagens;
 			
+			import mx.collections.ArrayCollection;
 			import mx.core.FlexGlobals;
+			import mx.rpc.events.ResultEvent;
+			public var h:Hotel = new Hotel();
+			
+			[Bindable]
+			public var dpHoteis:ArrayCollection = new ArrayCollection();
+			protected function buscarHotel(event:MouseEvent):void
+			{
+				if(campoCodigo.text != ''){
+					FlexGlobals.topLevelApplication.getHotel.addEventListener(ResultEvent.RESULT,buscarHotelResult);
+					FlexGlobals.topLevelApplication.hotelControle.buscarHotel(campoCodigo.text)
+				}else{
+					FlexGlobals.topLevelApplication.getHotelNome.addEventListener(ResultEvent.RESULT,buscarHotelResult);
+					FlexGlobals.topLevelApplication.hotelControle.buscarHotelNome(campoNome.text)
+				
+				}
+			}
+			protected function buscarHotelResult(event:ResultEvent):void{
+				desabilitarBotoes();
+				dpHoteis.removeAll();
+				if(event.result as Hotel){
+					dpHoteis.addItem(event.result);
+				}else{
+					dpHoteis = event.result as ArrayCollection;
+				}
+			}
+			protected function habilitarBotoes():void{
+				btAlterar.enabled = true;
+				btExcluir.enabled = true;
+			}
+			protected function desabilitarBotoes():void{
+				btAlterar.enabled = false;
+				btExcluir.enabled = false;
+			}
+			
 		]]>
 	</fx:Script>
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
 	<s:Label x="11" y="21" text="Código:"/>
-	<s:Label x="140" y="20" text="Nome do Hotel:"/>
-	<util:MasterTextInput id="campoCodigo" x="59" y="16" width="71"/>
-	<util:MasterTextInput id="campoNome" x="236" y="16" width="329"/>
-	<mx:Button id="btBuscar" x="581" y="15" width="97" label="Buscar" icon="{Imagens.localizar}"/>
-	<util:RowColorDataGrid x="10" y="84" width="670" height="248">
+	<s:Label x="139" y="21" text="Nome do Hotel:"/>
+	<util:MasterTextInput 
+		focusIn="{campoNome.text=''}"
+		text="{FlexGlobals.topLevelApplication.objHotelSelecionado.codigo}"
+		id="campoCodigo" x="59" y="16" width="71"/>
+	<util:MasterTextInput 
+		focusIn="{campoCodigo.text=''}"
+		text="{FlexGlobals.topLevelApplication.objHotelSelecionado.nome}"
+		id="campoNome" x="236" y="16" width="329"/>
+	<mx:Button 
+		click="buscarHotel(event)"
+		id="btBuscar" x="581" y="15" width="97" 
+		label="Buscar" icon="{Imagens.localizar}"/>
+	<util:RowColorDataGrid 
+		itemClick="habilitarBotoes()"
+		itemFocusIn="habilitarBotoes()"
+		dataProvider="{dpHoteis}"
+		x="10" y="84" width="670" height="248">
 		<util:columns>
 			<mx:DataGridColumn headerText="Código" width="120"
 							   dataField="codigo"
@@ -38,9 +87,12 @@
 	</util:RowColorDataGrid>
 	<mx:Canvas x="0" y="340" width="690" height="42">
 		<mx:Button id="btFechar" x="590" y="10" width="89" label="Fechar" icon="{Imagens.cancelar}"/>
-		<mx:Button id="btNovo" x="10" y="10" width="89" label="Novo" icon="{Imagens.adicionar}"/>
-		<mx:Button id="btAlterar" x="227" y="9" width="89" label="Alterar" icon="{Imagens.alterar}"/>
-		<mx:Button id="btExcluir" x="120" y="9" width="89" label="Excluir" icon="{Imagens.excluir}"/>
+		<mx:Button 
+			id="btNovo" x="10" y="10" width="89" 
+			label="Novo" icon="{Imagens.adicionar}"
+			click="FlexGlobals.topLevelApplication.abrirNovoHotel()"/>
+		<mx:Button id="btAlterar" x="108" y="10" width="89" label="Alterar" icon="{Imagens.alterar}"/>
+		<mx:Button id="btExcluir" x="207" y="10" width="89" label="Excluir" icon="{Imagens.excluir}"/>
 	</mx:Canvas>
 	<s:Label x="10" y="54" text="Lista de Hoteis"/>
 	<mx:HRule x="10" y="72" width="670" height="2"/>

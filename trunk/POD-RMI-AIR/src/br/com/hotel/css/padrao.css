@@ -16,12 +16,15 @@ mx|TabNavigator
 	horizontalGap: 10;
 	cornerRadius: 0;
 	tabOffset: 0;
+	
 }
 mx|TitleWindow {
+	
 	borderAlpha: 1.0;
 	borderColor: #3C7AA9;
 	backgroundColor: #F0F8FD;
 }
+
 mx|Canvas{
 	background-color: white;
 }
