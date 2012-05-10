@@ -3,8 +3,8 @@ package br.com.hotel.controle;
 import java.rmi.RemoteException;
 
 import br.com.hotel.modelo.Quarto;
+import br.com.hotel.rmi.cliente.Servico;
 import br.com.hotel.servico.IredeHoteleira;
-import br.com.hotel.servico.Servico;
 
 public class QuartoControle {
 
