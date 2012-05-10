@@ -7,6 +7,7 @@ import br.com.hotel.views.erro.ErroException;
 import br.com.hotel.views.hospede.NovoHospede;
 import br.com.hotel.views.hospede.PrincipalHospede;
 import br.com.hotel.views.hospede.TelaPrincipalHospede;
+import br.com.hotel.views.hotel.NovoHotel;
 import br.com.hotel.views.hotel.PrincipalHotel;
 import br.com.hotel.views.hotel.TelaPrincipalHotel;
 import br.com.hotel.views.quarto.PrincipalQuarto;
@@ -31,6 +32,7 @@ public var principalHospede:PrincipalHospede;
 public var novoHospede:NovoHospede;
 
 public var principalHotel:PrincipalHotel;
+public var novoHotel:NovoHotel;
 //public var telaCarregando:telaCarregando;i]
 
 /*
@@ -74,6 +76,12 @@ public function abrirPrincipalHotel():void {
 	principalHotel = PopUpManager.createPopUp(this, PrincipalHotel, true) as PrincipalHotel;
 	centralizarTela(principalHotel);
 }
+public function abrirNovoHotel():void {
+	novoHotel = PopUpManager.createPopUp(this,NovoHotel, true) as NovoHotel;
+	centralizarTela(novoHotel);
+}
+
+
 public function abrirPrincipalQuarto():void {
 	telaPrincipalQuartos = PopUpManager.createPopUp(this, PrincipalQuarto, true) as PrincipalQuarto;
 	centralizarTela(telaPrincipalQuartos);

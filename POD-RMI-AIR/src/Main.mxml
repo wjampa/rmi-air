@@ -33,24 +33,39 @@
 			<flerry:NativeMethod id="getAlterarHospede" name="alterarHospede"/>
 			<flerry:NativeMethod id="getExcluirHospede" name="excluirHospede"/>
 		</flerry:NativeObject>
+		<flerry:NativeObject id="hotelControle" source="br.com.hotel.controle.HotelControle"
+							 fault="FlexGlobals.topLevelApplication.onFault(event)"
+							 singleton="true">
+			<flerry:NativeMethod id="getListHoteis" name="getHoteis" />
+			<flerry:NativeMethod id="getGravarHotel" name="adicionarHotel" />
+			<flerry:NativeMethod id="setAlterarHotel" name="alterarHotel"/>
+			<flerry:NativeMethod id="setExcluirHotel" name="excluirHotel" />
+			<flerry:NativeMethod id="getHotel" name="buscarHotel"/>
+			<flerry:NativeMethod id="getHotelNome" name="buscarHotelNome"/>
+		</flerry:NativeObject> 
 	</fx:Declarations>
-	<mx:TabNavigator x="0" y="29" width="100%" height="117">
-		<s:NavigatorContent width="100%" height="100%" label="Cadastros">
-			<mx:LinkButton x="5.5" y="10" height="58" 
-						   label="Cadastro Hospedes"  click="{abrirPrincipalHospede()}" 
-						   icon="{Imagens.link_hospedes}"
-						   labelPlacement="bottom" textDecoration="none" />
-			<mx:LinkButton x="142.5" y="10" height="58" label="Cadastro de Reservas"
-						   click="{abrirPrincipalReserva()}" icon="{Imagens.link_hotel}"
-						   labelPlacement="bottom" textDecoration="none"/>
-		</s:NavigatorContent>
-		<s:NavigatorContent width="100%" height="100%" label="Configurações">
-			<mx:LinkButton x="10.5" y="10" height="58"
-						   label="Cadastro Hoteis" click="{abrirPrincipalHotel()}"
-						   icon="{Imagens.link_hotel}" labelPlacement="bottom" textDecoration="none"/>
-			<mx:LinkButton x="126.5" y="10" height="58" label="Cadastro Quartos"
-						   click="{abrirPrincipalQuarto()}" icon="{Imagens.link_hotel}"
-						   labelPlacement="bottom" textDecoration="none"/>
-		</s:NavigatorContent>
-	</mx:TabNavigator>
+
+	<s:BorderContainer 
+		backgroundImage="{Imagens.hotel}"
+		x="0" y="0" width="100%" height="100%">
+		<mx:TabNavigator x="0" y="44" width="100%" height="117" backgroundColor="#FFFFFF">
+			<s:NavigatorContent width="100%" height="100%" label="Cadastros">
+				<mx:LinkButton x="5.5" y="10" height="58" 
+							   label="Cadastro Hospedes"  click="{abrirPrincipalHospede()}" 
+							   icon="{Imagens.link_hospedes}"
+							   labelPlacement="bottom" textDecoration="none" />
+				<mx:LinkButton x="142.5" y="10" height="58" label="Cadastro de Reservas"
+							   click="{abrirPrincipalReserva()}" icon="{Imagens.link_hotel}"
+							   labelPlacement="bottom" textDecoration="none"/>
+			</s:NavigatorContent>
+			<s:NavigatorContent width="100%" height="100%" label="Configurações">
+				<mx:LinkButton x="10.5" y="10" height="58"
+							   label="Cadastro Hoteis" click="{abrirPrincipalHotel()}"
+							   icon="{Imagens.link_hotel}" labelPlacement="bottom" textDecoration="none"/>
+				<mx:LinkButton x="126.5" y="10" height="58" label="Cadastro Quartos"
+							   click="{abrirPrincipalQuarto()}" icon="{Imagens.link_hotel}"
+							   labelPlacement="bottom" textDecoration="none"/>
+			</s:NavigatorContent>
+		</mx:TabNavigator>
+	</s:BorderContainer>
 </s:WindowedApplication>

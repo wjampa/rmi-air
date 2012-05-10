@@ -41,6 +41,15 @@ public class HotelControle {
 		}
 		return null;
 	}
+	public List<Hotel> buscarHotelNome(String nome){
+		try {
+			return servico.buscarHotelNome(nome);
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	public Hotel alterarHotel(String codigo,Hotel hotel){
 		try {
 			return servico.alterarHotel(codigo,hotel);

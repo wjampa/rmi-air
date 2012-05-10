@@ -97,7 +97,10 @@ public class SRedeHoteleria extends UnicastRemoteObject implements
 	public Hotel buscarHotel(String codigo) throws RemoteException {
 		return arquivoDao.buscarHotel(codigo);
 	}
-
+	@Override
+	public List<Hotel> buscarHotelNome(String nome) throws RemoteException {
+		return arquivoDao.buscarHotelNome(nome);
+	}
 	@Override
 	public boolean adicionarHotel(Hotel hotel) throws RemoteException {
 		return arquivoDao.adicionarHotel(hotel);
@@ -146,6 +149,8 @@ public class SRedeHoteleria extends UnicastRemoteObject implements
 	public boolean excluirHospede(Hospede hospede) throws RemoteException {
 		return arquivoDao.excluirHospede(hospede);
 	}
+
+
 
 
 

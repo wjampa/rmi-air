@@ -2,15 +2,66 @@
 <mx:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009"
 				xmlns:s="library://ns.adobe.com/flex/spark"
 				xmlns:mx="library://ns.adobe.com/flex/mx"
-				width="574" height="300" close="FlexGlobals.topLevelApplication.fechar(this)"
+				xmlns:util="br.com.hotel.util.*"
+				width="574" height="214" close="FlexGlobals.topLevelApplication.fechar(this)"
 				layout="absolute" showCloseButton="true" title="Cadastro de Hotel">
 	<fx:Script>
 		<![CDATA[
+			import br.com.hotel.modelo.Hotel;
+			import br.com.hotel.util.Imagens;
+			
+			import mx.controls.Alert;
 			import mx.core.FlexGlobals;
+			import mx.rpc.events.ResultEvent;
+			[Bindable]
+			public var hotel:Hotel = new Hotel();
+			
+			protected function adicionarHotel(event:MouseEvent):void
+			{
+				FlexGlobals.topLevelApplication.getGravarHotel.addEventListener(ResultEvent.RESULT,adicionarHotelResult);
+				FlexGlobals.topLevelApplication.hotelControle.adicionarHotel(capturarCampos());
+			}
+			protected function adicionarHotelResult(event:ResultEvent):void{
+				if(event.result as Hotel){
+					Alert.show("Hotel cadastrado com sucesso!","ATENÇÃO");
+					FlexGlobals.topLevelApplication.objHotelSelecionado = event.result as Hotel;
+					FlexGlobals.topLevelApplication.fechar(this);
+				}
+			}
+			protected function capturarCampos():Hotel{
+				hotel.codigo = campoCodigo.text;
+				hotel.nome = campoNome.text;
+				hotel.gerente = campoGerente.text;
+				hotel.endereco = campoEndereco.text;
+				hotel.telefone = campoTelefone.text;
+				return hotel;
+			}
+			
 		]]>
 	</fx:Script>
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
-	
+	<s:Label x="20" y="10" text="Código:"/>
+	<s:Label x="122" y="10" text="Nome do Hotel:"/>
+	<s:Label x="20" y="64" text="Endereco:"/>
+	<s:Label x="409" y="10" text="Gerente:"/>
+	<s:Label x="412" y="63" text="Telefone:"/>
+	<util:MasterTextInput 
+		id="campoCodigo" x="20" y="28" width="78" nextFocusOnEnter="true"/>
+	<util:MasterTextInput 
+		id="campoNome" x="122" y="28" width="269" nextFocusOnEnter="true"/>
+	<util:MasterTextInput 
+		id="campoEndereco" x="20" y="82" width="371" nextFocusOnEnter="true"/>
+	<util:MasterTextInput 
+		id="campoGerente" x="409" y="28" width="135" nextFocusOnEnter="true"/>
+	<util:MasterTextInput 
+		id="campoTelefone" x="412" y="82" width="132" blankMaskChar=" "
+		inputMask="(99)9999-9999" nextFocusOnEnter="true"/>
+	<mx:Canvas x="0" y="133" width="554" height="41">
+		<mx:Button id="btFechar" x="456" y="10" width="92" label="Fechar"
+				   click="FlexGlobals.topLevelApplication.fechar(this)" icon="{Imagens.cancelar}"/>
+		<mx:Button id="btGravar" x="340" y="10" width="101" label="Gravar"
+				   click="adicionarHotel(event)" icon="{Imagens.adicionar}"/>
+	</mx:Canvas>
 </mx:TitleWindow>

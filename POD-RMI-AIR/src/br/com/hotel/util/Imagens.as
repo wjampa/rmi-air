@@ -45,6 +45,10 @@ package br.com.hotel.util
 		[Embed(source="../imagens/remover.png")]
 		[Bindable]
 		public static var excluir:Class;
+
+		[Embed(source="../imagens/hotel.jpg")]
+		[Bindable]
+		public static var hotel:Class;
 		
 		public function Imagens()	
 		{

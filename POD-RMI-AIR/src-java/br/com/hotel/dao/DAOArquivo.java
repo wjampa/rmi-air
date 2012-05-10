@@ -121,6 +121,17 @@ public class DAOArquivo {
 		}
 		return null;
 	}
+	public List<Hotel> buscarHotelNome(String nome){
+		List<Hotel> hoteis = new ArrayList<Hotel>();
+		int contem = 0;
+		for(Hotel h : redeHoteleira.getHoteis()){
+			contem = h.getNome().indexOf(nome);
+			if(contem != -1){
+				hoteis.add(h);
+			}
+		}
+		return hoteis;
+	}
 	public List<Hotel> getHoteis(){
 		return redeHoteleira.getHoteis();
 	}

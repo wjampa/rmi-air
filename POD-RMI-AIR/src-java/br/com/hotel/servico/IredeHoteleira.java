@@ -39,6 +39,7 @@ public interface IredeHoteleira extends Remote {
  */
 	public List<Hotel> getHoteis() throws RemoteException;
 	public Hotel buscarHotel(String codigo) throws RemoteException;
+	public List<Hotel> buscarHotelNome(String nome) throws RemoteException;
 	public boolean adicionarHotel(Hotel hotel) throws RemoteException;
 	public Hotel alterarHotel(String codigo,Hotel hotel) throws RemoteException;
 	public boolean excluirHotel(Hotel hotel) throws RemoteException;
