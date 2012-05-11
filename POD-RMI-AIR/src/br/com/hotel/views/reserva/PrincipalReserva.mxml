@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009"
+				xmlns:s="library://ns.adobe.com/flex/spark"
+				xmlns:mx="library://ns.adobe.com/flex/mx"
+				xmlns:util="br.com.hotel.util.*"
+				width="848" height="566" close="FlexGlobals.topLevelApplication.fechar(this)"
+				layout="absolute" showCloseButton="true" title="Cadastro de Reservas ou Hospedagens">
+	<fx:Script>
+		<![CDATA[
+			import br.com.hotel.util.Imagens;
+			
+			import mx.core.FlexGlobals;
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<mx:DateChooser x="10" y="10" selectedDate="{new Date()}"
+					yearNavigationEnabled="true"
+					dayNames="['D','S','T','Q','Q','S','S']" monthNames="['Janeiro','Fevereiro','Março','Abril',
+					'Maio','Junho','Julho','Agosto','Setembro','Outubro',
+					'Novembro','Dezembro']"/>
+	<s:Label x="205" y="12" text="Selecione o Hotel:"/>
+	<mx:ComboBox id="cbHotel" x="205" y="30" width="192"/>
+	<s:Label x="212" y="72" text="CPF:"/>
+	<util:MasterTextInput 
+		fullText="{FlexGlobals.topLevelApplication.objHospedeSelecionado.cpf}"
+		inputMask="999.999.999-99"
+		id="campoCPF" x="210" y="88" width="124" blankMaskChar=" "
+		 nextFocusOnEnter="true"/>
+	<s:Label x="423" y="12" text="Selecione o quarto:"/>
+	<mx:ComboBox x="423" y="30" width="141"/>
+	<mx:HRule x="208" y="64" width="610"/>
+	<s:Label x="395" y="73" text="Nome Hospede:"/>
+	<mx:Button id="btBuscarCPF" x="342" y="87" icon="{Imagens.localizar}"/>
+	<util:MasterTextInput x="398" y="88" width="351"/>
+	<mx:Button id="btAbrirHospede" x="762" y="87" icon="{Imagens.localizar}"/>
+	<util:RowColorDataGrid 
+		x="9" y="198" width="809" height="248">
+		<util:columns>
+			<mx:DataGridColumn headerText="Data Reserva" width="120"
+							   dataField="codigo"
+							   />
+			<mx:DataGridColumn headerText="Nome do Hospede"
+							   dataField="nome"
+							   />
+			<mx:DataGridColumn headerText="Data Inicio" width="100"
+							   dataField="gerente"
+							   />
+			<mx:DataGridColumn headerText="Data Fim" width="100"
+							   dataField="telefone"
+							   />
+			<mx:DataGridColumn headerText="Situação" width="100"
+							   dataField="telefone"
+							   />
+		</util:columns>
+	</util:RowColorDataGrid>
+	<mx:Canvas x="80" y="451" width="67" height="10" backgroundColor="#FFFF00"/>
+	<mx:Canvas x="-1" y="484" width="829" height="42">
+		<mx:Button id="btFechar" x="730" y="10" width="89" label="Fechar" icon="{Imagens.cancelar}"/>
+		<mx:Button 
+			id="btNovo" x="10" y="10" width="89" 
+			label="Novo" icon="{Imagens.adicionar}"/>
+		<mx:Button 
+			id="btAlterar" x="108" y="10" width="89" 
+			label="Alterar" icon="{Imagens.alterar}"
+			/>
+		<mx:Button 
+			id="btExcluir" x="207" y="10" width="109" 
+			label="Excluir" icon="{Imagens.excluir}"
+			/>
+	</mx:Canvas>
+	<s:Label x="11" y="451" text="Reservado"/>
+	<mx:Canvas x="230" y="451" width="67" height="10" backgroundColor="#00FF00"/>
+	<mx:Canvas x="420" y="451" width="67" height="10" backgroundColor="#FF0000"/>
+	<s:Label x="311" y="451" text="Reservas vencidas"/>
+	<s:Label x="161" y="451" text="Hospedado"/>
+	
+	
+</mx:TitleWindow>

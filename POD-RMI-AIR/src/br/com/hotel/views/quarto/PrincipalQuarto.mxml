@@ -2,13 +2,11 @@
 <mx:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009"
 				xmlns:s="library://ns.adobe.com/flex/spark"
 				xmlns:mx="library://ns.adobe.com/flex/mx"
-				xmlns:flerry="net.riaspace.flerry.*"
-				close="FlexGlobals.topLevelApplication.fechar(this)" layout="absolute"
-				showCloseButton="true"
-				width.inicio="382" height.inicio="162"
-				creationComplete.inicio="iniciarInicio(event)" title.inicio="Selecionar um hotel"
-				width.quarto="627" height.quarto="448" horizontalAlign.quarto="center"
-				title.quarto="Principal Quartos" verticalAlign.quarto="middle">
+				width="678" height="470" layout="absolute" showCloseButton="true"
+				title="Principal Quarto"
+				close="FlexGlobals.topLevelApplication.fechar(this)"
+				creationComplete="inicializar()" xmlns:util="br.com.hotel.util.*"
+				>
 	<fx:Script>
 		<![CDATA[
 			import br.com.hotel.modelo.Hotel;
@@ -19,130 +17,133 @@
 			import mx.controls.Alert;
 			import mx.core.FlexGlobals;
 			import mx.events.FlexEvent;
+			import mx.events.ListEvent;
 			import mx.rpc.events.ResultEvent;
 			
-			import spark.events.GridSelectionEvent;
 			[Bindable]
-			public var dpHoteis:ArrayCollection = new ArrayCollection;
+			public var dpHoteis:ArrayCollection = new ArrayCollection();
+			
 			[Bindable]
 			public var hotelSelecionado:Hotel = new Hotel();
-			[Bindable]
-			public var quartoSelecionado:Quarto = new Quarto();
-			[bindable]
-			public var numeroQuartoAnterior:String = new String();
-			protected function iniciarInicio(event:FlexEvent):void{
-				hotelControle.getHoteis();					
-			}
-			public function getHoteisResultHandler(event:ResultEvent):void{
-				dpHoteis = event.result as ArrayCollection;
-			}
-			public function selecionarHotel():void{
-				hotelSelecionado = cbHotel.selectedItem as Hotel;
-				currentState = "quarto";
-				FlexGlobals.topLevelApplication.centralizarTela(FlexGlobals.topLevelApplication.telaPrincipalQuartos);
-			}
-			public function gravarHotel():void{
-				hotelSelecionado.quartos.addItem(capturarCamposForm());
-				hotelControle.alterarHotel(hotelSelecionado.codigo,hotelSelecionado);
-			}
-			public function alterarQuarto():void{
-				var quarto:Quarto = capturarCamposForm();
-				quartoControle.alterarQuarto(hotelSelecionado.codigo,numeroQuartoAnterior,quarto);
-			}
-			public function gravarHotelResultHandler(event:ResultEvent):void{
-				hotelSelecionado = event.result as Hotel;
-			}
-			public function alterarHotelResultHandler(event:ResultEvent):void{
-				hotelSelecionado = event.result as Hotel;
-			}
-			public function capturarCamposForm():Quarto{
-				var quarto:Quarto =  new Quarto();
-				quarto.num = parseInt(campoNumero.text);
-				quarto.andar = campoAndar.text;
-				quarto.preco  = parseFloat(campoPreco.text);
-				return quarto;
-			}
-			public function preencherFormulario(quarto:Quarto):void{
-				campoAndar.text = quarto.andar;
-				campoNumero.text = quarto.num.toString();
-				campoPreco.text = quarto.preco.toString();
-			}
-			protected function selecionarQuarto(event:GridSelectionEvent):void
+			public function inicializar():void
 			{
-				quartoSelecionado = dgQuarto.selectedItem as Quarto;
-				numeroQuartoAnterior = quartoSelecionado.num.toString();
-				preencherFormulario(quartoSelecionado);
+				FlexGlobals.topLevelApplication.getListHoteis.addEventListener(ResultEvent.RESULT,hoteisResult);
+				FlexGlobals.topLevelApplication.hotelControle.getHoteis();
+				FlexGlobals.topLevelApplication.objHotelSelecionado = new Hotel();
 			}
-			public function alterarQuartoResultHandler(event:ResultEvent):void{
-				hotelControle.buscarHotel(hotelSelecionado.codigo);	
+			protected function hoteisResult(event:ResultEvent):void{
+				var h:Hotel = new Hotel;
+				h.nome = "Selecione um Hotel";
+				dpHoteis.addItem(h)
+				dpHoteis.addAll(event.result as ArrayCollection);
 			}
-			public function buscarHotelResultHandler(event:ResultEvent):void{
-				hotelSelecionado = event.result as Hotel;
+			
+			protected function mostrarQuartos(event:ListEvent):void
+			{
+				FlexGlobals.topLevelApplication.objHotelSelecionado = cbHoteis.selectedItem as Hotel;
+				
 			}
-			public function deletarQuarto():void{
-				quartoControle.excluirQuarto(hotelSelecionado.codigo,quartoSelecionado.num);
+			protected function habilitarBotoes():void{
+				btNovo.enabled = true;
+				btExcluir.enabled = true;
+				btAlterar.enabled = true;
+			}
+			protected function desabilitarBotoes():void{
+				btNovo.enabled = false;
+				btExcluir.enabled = false;
+				btAlterar.enabled = false;
+			}
+			protected function cbHoteis_changeHandler(event:ListEvent):void
+			{
+				// TODO Auto-generated method stub
+				
+			}
+			
+			protected function abrirNovo(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				if(FlexGlobals.topLevelApplication.objHotelSelecionado.codigo != null)
+					FlexGlobals.topLevelApplication.abrirNovoQuarto()
+				else
+					Alert.show("Atenção selecione um hotel","ATENÇÃO");
+			}
+			
+			protected function alterarQuarto(event:MouseEvent):void
+			{
+				FlexGlobals.topLevelApplication.objQuartoSelecionado = dgQuartos.selectedItem as Quarto;
+				FlexGlobals.topLevelApplication.abrirNovoQuarto();
+				FlexGlobals.topLevelApplication.novoQuarto.btGravar.label = "Alterar";
+				
+			}
+			
+			protected function excluirQuarto(event:MouseEvent):void
+			{
+				var codigoHotel:String = FlexGlobals.topLevelApplication.objHotelSelecionado.codigo;
+				var numQuarto:Number = (dgQuartos.selectedItem as Quarto).num;
+				
+				FlexGlobals.topLevelApplication.setExcluirQuarto.addEventListener(ResultEvent.RESULT,excluirQuartoResult);
+				FlexGlobals.topLevelApplication.quartoControle.excluirQuarto(codigoHotel,numQuarto);
+			}
+			protected function excluirQuartoResult(event:ResultEvent):void{
+				var id:int = 0;
+				id = dgQuartos.selectedIndex;
+				if(event.result){
+					FlexGlobals.topLevelApplication.objHotelSelecionado.quartos.removeItemAt(id);
+					Alert.show("Quarto excluido com Sucesso!","ATENÇÃO");
+				}else{
+					Alert.show("Erro ao excluir quarto!","ATENÇÃO ERRO!");
+				}
 			}
 		]]>
 	</fx:Script>
-	<mx:states>
-		<s:State name="inicio"/>
-		<s:State name="quarto"/>
-	</mx:states>
 	<fx:Declarations>
-		<flerry:NativeObject id="hotelControle" source="br.com.hotel.controle.HotelControle"
-							 fault="FlexGlobals.topLevelApplication.onFault(event)"
-							 singleton="true" >
-			
-			<flerry:NativeMethod id="getListHoteis" name="getHoteis" result="getHoteisResultHandler(event)"/>
-			<flerry:NativeMethod id="setAlterarHotel" name="alterarHotel" result="alterarHotelResultHandler(event)"/>
-			<flerry:NativeMethod id="getHotel" name="buscarHotel" result="buscarHotelResultHandler(event)"/>
-			
-		</flerry:NativeObject>
-		<flerry:NativeObject id="quartoControle" source="br.com.hotel.controle.QuartoControle"
-							 fault="FlexGlobals.topLevelApplication.onFault(event)"
-							 singleton="true" debug="true">
-			<flerry:NativeMethod id="setAlterarQuarto" name="alterarQuarto" result="alterarQuartoResultHandler(event)"/>
-			<flerry:NativeMethod id="setExcluirQuarto" name="excluirQuarto" result="alterarQuartoResultHandler(event)"/>
-		</flerry:NativeObject> 
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
-	<s:Label includeIn="inicio" x="10" y="10" width="342" height="55"
-			 text="Para cadastrar,alterar e visualizar os quartos cadastrados, selecione um hotel"/>
-	<s:Label includeIn="inicio" x="10" y="54" text="Hotel:"/>
-	<mx:ComboBox 
-		id="cbHotel"
-		labelField="nome"
-		dataProvider="{dpHoteis}"
-		includeIn="inicio" x="53" y="48" width="299"/>
-	<mx:Button id="btConfirmar" includeIn="inicio" x="247" y="90" width="106" label="Confirmar"
-			   icon.inicio="{Imagens.confirmar}" click="selecionarHotel()"/>
-	<s:Label 
-		includeIn="quarto" x="12" y="9" color="#FF6F29" fontSize="14" text="Hotel Selecionado {hotelSelecionado.nome}"/>
-	<s:DataGrid id="dgQuarto" includeIn="quarto" x="10" y="145" width="587" height="255"
-				selectionChange="selecionarQuarto(event)"
-				dataProvider="{hotelSelecionado.quartos}" requestedRowCount="4">
-		<s:columns>
-			<s:ArrayList>
-				<s:GridColumn width="60" dataField="num" headerText="Número"></s:GridColumn>
-				<s:GridColumn dataField="andar" headerText="Andar"></s:GridColumn>
-				<s:GridColumn width="50"  dataField="preco" headerText="Valor"></s:GridColumn>
-			</s:ArrayList>
-		</s:columns>
-	</s:DataGrid>
-	<s:Label includeIn="quarto" x="12" y="32" text="Número:"/>
-	<s:TextInput id="campoNumero" includeIn="quarto" x="12" y="50" width="66" />
-	<s:Label includeIn="quarto" x="105" y="32" text="Andar:"/>
-	<s:TextInput id="campoAndar" includeIn="quarto" x="105" y="50" width="309" />
-	<s:Label includeIn="quarto" x="432" y="32" text="Preço:"/>
-	<s:TextInput id="campoPreco" includeIn="quarto" x="432" y="50" />
-	<mx:Button id="btGravar" includeIn="quarto" x="12" y="79" width="103" label="Gravar"
-			   click="gravarHotel()"
-			   icon="{Imagens.adicionar}"/>
-	<mx:Button id="btAlterar" includeIn="quarto" x="123" y="80" width="94" label="Alterar"
-			  icon="{Imagens.alterar}" click="alterarQuarto()"/>
-	<mx:Button id="btExcluir" includeIn="quarto" x="225" y="80" width="92" label="Excluir"
-			   icon="{Imagens.excluir}" click="deletarQuarto()"/>
-	<mx:Button id="btConfirmar0" includeIn="quarto" x="325" y="80" width="109" label="Confirmar"
-			   icon="{Imagens.confirmar}"/>
-	<s:Label includeIn="quarto" x="12" y="118" text="Lista de Quartos"/>
-	<mx:HRule includeIn="quarto" x="10" y="136" width="587" height="1"/>
+	<s:Label x="15" y="15" text="Selecione o Hotel:"/>
+	<mx:ComboBox id="cbHoteis" x="121" y="11" width="235" change="mostrarQuartos(event)"
+				 
+				 dataProvider="{dpHoteis}" 
+				 labelField="nome"/>
+	
+	
+	<util:RowColorDataGrid 
+		id="dgQuartos"
+		dataProvider="{FlexGlobals.topLevelApplication.objHotelSelecionado.quartos}"
+		itemClick="habilitarBotoes()"
+		itemFocusIn="habilitarBotoes()"
+		x="12" y="64" width="636" height="317">
+		<util:columns>
+			<mx:DataGridColumn headerText="Número" width="120"
+							   dataField="num"
+							   />
+			<mx:DataGridColumn headerText="Andar"
+							   dataField="andar"
+							   />
+			<mx:DataGridColumn headerText="Preço" width="100"
+							   dataField="preco"
+							   />
+		</util:columns>
+	</util:RowColorDataGrid>
+	<s:Label x="13" y="42" text="Lista de quartos"/>
+	<mx:HRule x="14" y="54" width="634"/>
+	<mx:Canvas x="0" y="389" width="657" height="41" backgroundColor="#FFFFFF" borderColor="#FFFFFF"
+			   borderStyle="none">
+		<mx:Button 
+			icon="{Imagens.cancelar}"
+			id="btFecha" x="553" y="11" 
+			width="94" label="Fechar" click="FlexGlobals.topLevelApplication.fechar(this)"/>
+		<mx:Button 
+			icon="{Imagens.adicionar}"
+			id="btNovo" x="16" y="11" 
+			click="abrirNovo(event)"
+			width="94" label="Novo" />
+		<mx:Button 
+			icon="{Imagens.alterar}"
+			id="btAlterar" x="116" y="11" 
+			width="94" label="Alterar" click="alterarQuarto(event)" />
+		<mx:Button 
+			icon="{Imagens.excluir}"
+			id="btExcluir" x="216" y="11" 
+			width="94" label="Excluir" click="excluirQuarto(event)"/>
+	</mx:Canvas>
 </mx:TitleWindow>

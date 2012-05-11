@@ -13,7 +13,6 @@ import br.com.hotel.modelo.Reserva;
 
 public interface IredeHoteleira extends Remote {
 
-	public Quarto cadastrarQuarto(String codigoHotel,String andar) throws RemoteException;
 		
 	public String verificarReserva(String codigoHotel, Date dataInicio, Date dataFim) throws RemoteException;
 	
@@ -46,6 +45,7 @@ public interface IredeHoteleira extends Remote {
 /*
  * Metodo para Quarto
  */
+	public Quarto adicionarQuarto(String codigoHotel,Quarto quarto) throws RemoteException;
 	public Quarto alterarQuarto(String codigoHotel, String numeroQuarto, Quarto quarto) throws RemoteException;
 	public boolean excluirQuarto(String codigoHotel,Integer numeroQuarto) throws RemoteException;
 }

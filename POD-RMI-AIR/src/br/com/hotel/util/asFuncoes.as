@@ -10,7 +10,10 @@ import br.com.hotel.views.hospede.TelaPrincipalHospede;
 import br.com.hotel.views.hotel.NovoHotel;
 import br.com.hotel.views.hotel.PrincipalHotel;
 import br.com.hotel.views.hotel.TelaPrincipalHotel;
+import br.com.hotel.views.quarto.NovoQuarto;
 import br.com.hotel.views.quarto.PrincipalQuarto;
+import br.com.hotel.views.quarto.TelaPrincipalQuarto;
+import br.com.hotel.views.reserva.PrincipalReserva;
 import br.com.hotel.views.reserva.TelaPrincipalReserva;
 
 import mx.core.UIComponent;
@@ -24,7 +27,7 @@ public var erroInformado:String = new String();
 public var telaErroException:ErroException;
 public var telaPrincipalHospede:TelaPrincipalHospede;
 public var telaPrincipalHotel:TelaPrincipalHotel;
-public var telaPrincipalQuartos:PrincipalQuarto;
+public var telaPrincipalQuartos:TelaPrincipalQuarto;
 public var telaPrincipalReserva:TelaPrincipalReserva;
 
 
@@ -33,6 +36,11 @@ public var novoHospede:NovoHospede;
 
 public var principalHotel:PrincipalHotel;
 public var novoHotel:NovoHotel;
+
+public var principalQuartos:PrincipalQuarto;
+public var novoQuarto:NovoQuarto;
+
+public var principalReserva:PrincipalReserva;
 //public var telaCarregando:telaCarregando;i]
 
 /*
@@ -59,7 +67,7 @@ public function abrirErroException():void {
 	centralizarTela(telaErroException);
 }
 /*
- *Tela para hospedes 
+ *Telas para hospedes 
 */
 public function abrirPrincipalHospede():void {
 	principalHospede = PopUpManager.createPopUp(this,PrincipalHospede, true) as PrincipalHospede;
@@ -69,9 +77,9 @@ public function abrirNovoHospede():void {
 	novoHospede = PopUpManager.createPopUp(this,NovoHospede, true) as NovoHospede;
 	centralizarTela(novoHospede);
 }
-
-
-
+/*
+*Telas para hotel
+*/
 public function abrirPrincipalHotel():void {
 	principalHotel = PopUpManager.createPopUp(this, PrincipalHotel, true) as PrincipalHotel;
 	centralizarTela(principalHotel);
@@ -82,13 +90,22 @@ public function abrirNovoHotel():void {
 }
 
 
+/*
+*Telas para quartos
+*/
 public function abrirPrincipalQuarto():void {
-	telaPrincipalQuartos = PopUpManager.createPopUp(this, PrincipalQuarto, true) as PrincipalQuarto;
-	centralizarTela(telaPrincipalQuartos);
+	principalQuartos = PopUpManager.createPopUp(this, PrincipalQuarto, true) as PrincipalQuarto;
+	centralizarTela(principalQuartos);
 }
+
+public function abrirNovoQuarto():void {
+	novoQuarto = PopUpManager.createPopUp(this,NovoQuarto, true) as NovoQuarto;
+	centralizarTela(novoQuarto);
+}
+
 public function abrirPrincipalReserva():void {
-	telaPrincipalReserva = PopUpManager.createPopUp(this, TelaPrincipalReserva, true) as TelaPrincipalReserva;
-	centralizarTela(telaPrincipalReserva);
+	principalReserva = PopUpManager.createPopUp(this, PrincipalReserva, true) as PrincipalReserva;
+	centralizarTela(principalReserva);
 }
 /*public function abrirCarregando(texto:String):void{
 	telaCarregando = PopUpManager.createPopUp(this, telaCarregando, true) as telaCarregando;

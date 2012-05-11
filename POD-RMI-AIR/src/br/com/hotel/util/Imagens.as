@@ -41,6 +41,10 @@ package br.com.hotel.util
 		[Embed(source="../imagens/search.png")]
 		[Bindable]
 		public static var localizar:Class;
+		
+		[Embed(source="../imagens/find.png")]
+		[Bindable]
+		public static var buscar:Class;
 
 		[Embed(source="../imagens/remover.png")]
 		[Bindable]
