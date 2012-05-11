@@ -36,13 +36,6 @@ public class SRedeHoteleria extends UnicastRemoteObject implements
 	}
 
 	@Override
-	public Quarto cadastrarQuarto(String codigoHotel, String andar)
-			throws RemoteException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public String verificarReserva(String codigoHotel, Date dataInicio,
 			Date dataFim) throws RemoteException {
 		// TODO Auto-generated method stub
@@ -77,6 +70,11 @@ public class SRedeHoteleria extends UnicastRemoteObject implements
 	/*
 	 * Quartos
 	 */
+	@Override
+	public Quarto adicionarQuarto(String codigoHotel, Quarto quarto)
+			throws RemoteException {
+		return arquivoDao.adicionarQuarto(codigoHotel, quarto);
+	}
 	@Override
 	public Quarto alterarQuarto(String codigoHotel, String numeroQuarto,
 			Quarto quarto) throws RemoteException {
@@ -149,6 +147,8 @@ public class SRedeHoteleria extends UnicastRemoteObject implements
 	public boolean excluirHospede(Hospede hospede) throws RemoteException {
 		return arquivoDao.excluirHospede(hospede);
 	}
+
+
 
 
 

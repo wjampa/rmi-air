@@ -13,6 +13,14 @@ public class QuartoControle {
 		super();
 		servico = Servico.getServico();
 	}
+	public Quarto adicionarQuarto(String  codigoHotel, Quarto quarto){
+		try {
+			return servico.adicionarQuarto(codigoHotel, quarto);
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 	public Quarto alterarQuarto(String  codigoHotel, String numeroQuarto,Quarto quarto){
 		try {
 			return servico.alterarQuarto(codigoHotel, numeroQuarto, quarto);

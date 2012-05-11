@@ -41,16 +41,6 @@ public class DAOArquivo {
 	
 	}
 	
-	public Quarto adicionarQuarto(Hotel hotel, Quarto quarto){
-		for (Hotel h : redeHoteleira.getHoteis()) {
-			if(h.getCodigo().equals(hotel.getCodigo())){
-				h.getQuartos().add(quarto);
-			}
-		}
-		atualizarArquivo();
-		return quarto;
-	}
-		
 	public int quartosPorAndar(String codigoHotel,String andar){
 		int count=0;
 		for (Hotel h : redeHoteleira.getHoteis()){
@@ -65,6 +55,18 @@ public class DAOArquivo {
 	/*
 	 * Quartos
 	 */
+	public Quarto adicionarQuarto(String codigoHotel,Quarto quarto){
+		for(Hotel h : redeHoteleira.getHoteis()){
+			if(h.getCodigo().equals(codigoHotel)){
+				h.getQuartos().add(quarto);
+				if(atualizarArquivo())
+					return quarto;
+				else
+					return null;
+			}
+		}
+		return null;
+	}
 	public Quarto alterarQuarto(String codigoHotel,String numeroQuarto,Quarto quarto){
 		for(Hotel h : redeHoteleira.getHoteis()){
 			if(h.getCodigo().equals(codigoHotel)){

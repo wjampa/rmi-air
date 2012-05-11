@@ -44,6 +44,14 @@
 			<flerry:NativeMethod id="getHotel" name="buscarHotel"/>
 			<flerry:NativeMethod id="getHotelNome" name="buscarHotelNome"/>
 		</flerry:NativeObject> 
+		
+		<flerry:NativeObject id="quartoControle" source="br.com.hotel.controle.QuartoControle"
+							 fault="FlexGlobals.topLevelApplication.onFault(event)"
+							 singleton="true">
+			<flerry:NativeMethod id="setAdicionarQuarto" name="adicionarQuarto"/>
+			<flerry:NativeMethod id="setAlterarQuarto" name="alterarQuarto"/>
+			<flerry:NativeMethod id="setExcluirQuarto" name="excluirQuarto"/>
+		</flerry:NativeObject> 
 	</fx:Declarations>
 
 	<s:BorderContainer 

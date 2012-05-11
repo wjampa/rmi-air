@@ -2,10 +2,9 @@
 <mx:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009"
 				xmlns:s="library://ns.adobe.com/flex/spark"
 				xmlns:mx="library://ns.adobe.com/flex/mx"
-				width="594" height="330" layout="absolute" 
-				close="{FlexGlobals.topLevelApplication.fechar(this)}"
-				showCloseButton="true"
-				title="Um erro aconteceu!">
+				width="594" height="330" backgroundColor="#FDF4F0" borderColor="#C04524"
+				close="{FlexGlobals.topLevelApplication.fechar(this)}" layout="absolute"
+				showCloseButton="true" title="Um erro aconteceu!">
 	<fx:Script>
 		<![CDATA[
 			import mx.core.FlexGlobals;
@@ -19,6 +18,6 @@
 	<s:TextArea 
 		text="{saida}"
 		x="10" y="43" 
-		width="550" height="215"/>
+		width="550" height="237"/>
 	<s:Label x="11" y="10" text="Tente fechar o aplicativo e iniciar novamente. Se o problema persistir, entre em contato com o Administrador do sistema e informe o texto abaixo.&#xd;" width="549"/>
 </mx:TitleWindow>

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009"
+				xmlns:s="library://ns.adobe.com/flex/spark"
+				xmlns:mx="library://ns.adobe.com/flex/mx"
+				xmlns:util="br.com.hotel.util.*"
+				width="582" height="144" close="FlexGlobals.topLevelApplication.fechar(this)"
+				layout="absolute" showCloseButton="true" title="Cadastro de Quarto">
+	<fx:Script>
+		<![CDATA[
+			import br.com.hotel.modelo.Quarto;
+			import br.com.hotel.util.Imagens;
+			
+			import mx.controls.Alert;
+			import mx.core.FlexGlobals;
+			import mx.rpc.events.ResultEvent;
+			
+			public var quarto:Quarto;
+			public var numQuartoAnterior:String = new String();
+			protected function gravarQuarto(event:MouseEvent):void
+			{
+				if(btGravar.label != 'Alterar'){
+					FlexGlobals.topLevelApplication.setAdicionarQuarto.addEventListener(ResultEvent.RESULT,adicionarQuartoResult);
+					FlexGlobals.topLevelApplication.quartoControle.adicionarQuarto(
+					FlexGlobals.topLevelApplication.objHotelSelecionado.codigo,pegarDadosFormulario());
+				}else{
+					var id:int = 0;
+					id = FlexGlobals.topLevelApplication.principalQuartos.dgQuartos.selectedIndex;
+					FlexGlobals.topLevelApplication.objHotelSelecionado.quartos.removeItemAt(id);
+					
+					numQuartoAnterior = FlexGlobals.topLevelApplication.objQuartoSelecionado.num;
+					FlexGlobals.topLevelApplication.setAlterarQuarto.addEventListener(ResultEvent.RESULT,adicionarQuartoResult);
+					FlexGlobals.topLevelApplication.quartoControle.alterarQuarto(
+						FlexGlobals.topLevelApplication.objHotelSelecionado.codigo,
+						numQuartoAnterior,pegarDadosFormulario());
+						
+					
+				}
+			}
+			protected function adicionarQuartoResult(event:ResultEvent):void{
+				if(event.result as Quarto){
+					Alert.show("Quarto Cadastrado com Sucesso!","ATENÇÃO");
+					FlexGlobals.topLevelApplication.objHotelSelecionado.quartos.addItem(event.result as Quarto);
+					FlexGlobals.topLevelApplication.fechar(this);
+				}else{
+					Alert.show("Erro ao cadastrar o quarto","ATENÇÃO");
+				}
+					
+			}
+			protected function pegarDadosFormulario():Quarto{
+				quarto = new Quarto();
+				quarto.num = parseInt(campoNumero.text);
+				quarto.andar = campoAndar.text;
+				quarto.preco = parseFloat(campoPreco.text);
+				return quarto;
+			}
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<mx:Canvas x="0" y="63" width="562" height="41" backgroundColor="#FFFFFF">
+		<mx:Button 
+			icon="{Imagens.confirmar}"
+			id="btGravar" x="348" y="11" 
+			width="94" label="Gravar" click="gravarQuarto(event)"/>
+		<mx:Button 
+			icon="{Imagens.cancelar}"
+			id="btFechar" x="456" y="11" 
+			width="94" label="Fechar"/>
+	</mx:Canvas>
+	<s:Label x="13" y="10" text="Número:"/>
+	<s:Label x="119" y="10" text="Descrição do Andar:"/>
+	<s:Label x="465" y="9" text="Valor da diária:"/>
+	<util:MasterTextInput 
+		text="{FlexGlobals.topLevelApplication.objQuartoSelecionado.num}"
+		id="campoNumero" x="13" y="28" width="89"/>
+	<util:MasterTextInput
+		text="{FlexGlobals.topLevelApplication.objQuartoSelecionado.andar}"
+		id="campoAndar" x="117" y="28" width="317"/>
+	<util:MasterTextInput 
+		text="{FlexGlobals.topLevelApplication.objQuartoSelecionado.preco}"
+		id="campoPreco" x="464" y="28" width="89"/>
+</mx:TitleWindow>
