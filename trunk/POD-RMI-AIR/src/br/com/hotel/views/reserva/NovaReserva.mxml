@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009"
+				xmlns:s="library://ns.adobe.com/flex/spark"
+				xmlns:mx="library://ns.adobe.com/flex/mx"
+				xmlns:util="br.com.hotel.util.*"
+				width="694" height="300" close="FlexGlobals.topLevelApplication.fechar(this)"
+				layout="absolute" showCloseButton="true" title="Cadastro de reserva">
+	<fx:Script>
+		<![CDATA[
+			import mx.core.FlexGlobals;
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<s:Label x="15" y="15" text="CPF:"/>
+	<util:MasterTextInput 
+		fullText="{FlexGlobals.topLevelApplication.objHospedeSelecionado.cpf}"
+		inputMask="999.999.999-99"
+		id="campoCPF" x="47" y="10" width="163" blankMaskChar=" "
+		 nextFocusOnEnter="true"/>
+	<s:Label x="218" y="15" text="Nome hospede:"/>
+	<util:MasterTextInput x="316" y="10" width="310"/>
+</mx:TitleWindow>

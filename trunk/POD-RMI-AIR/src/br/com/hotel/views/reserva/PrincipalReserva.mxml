@@ -3,59 +3,129 @@
 				xmlns:s="library://ns.adobe.com/flex/spark"
 				xmlns:mx="library://ns.adobe.com/flex/mx"
 				xmlns:util="br.com.hotel.util.*"
+				creationComplete="inicializar(event)"				
 				width="848" height="566" close="FlexGlobals.topLevelApplication.fechar(this)"
 				layout="absolute" showCloseButton="true" title="Cadastro de Reservas ou Hospedagens">
 	<fx:Script>
 		<![CDATA[
+			import br.com.hotel.modelo.Hospede;
+			import br.com.hotel.modelo.Hotel;
+			import br.com.hotel.modelo.Reserva;
 			import br.com.hotel.util.Imagens;
 			
+			import mx.collections.ArrayCollection;
 			import mx.core.FlexGlobals;
+			import mx.events.FlexEvent;
+			import mx.events.ListEvent;
+			import mx.rpc.events.ResultEvent;
+			
+			public var hotel:Hotel = new Hotel();
+			[Bindable]
+			public var dpReservas:ArrayCollection = new ArrayCollection();
+			protected function inicializar(event:FlexEvent):void
+			{
+				FlexGlobals.topLevelApplication.getListHoteis.addEventListener(ResultEvent.RESULT,listaHoteisResult);
+				FlexGlobals.topLevelApplication.hotelControle.getHoteis();
+				
+			}
+			public function listaHoteisResult(event:ResultEvent):void{
+				FlexGlobals.topLevelApplication.listaHoteis = event.result as ArrayCollection;
+			}
+			
+			protected function selecionarHotel(event:ListEvent):void
+			{
+				FlexGlobals.topLevelApplication.objHotelSelecionado = cbHotel.selectedItem as Hotel;
+				dpReservas.removeAll();
+				for each(var r:Reserva in FlexGlobals.topLevelApplication.objHotelSelecionado.reservas){
+					dpReservas.addItem(r);
+				}
+				calendario.enabled = true;
+			}
+			
+			protected function gravarReservaHospedagem(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				
+			}
+			
+			protected function buscarHospedeCPF(event:MouseEvent):void
+			{
+				FlexGlobals.topLevelApplication.getListHospedeCPF.addEventListener(ResultEvent.RESULT,listHopedeCpf);
+				FlexGlobals.topLevelApplication.hospedeControle.buscarHospedeCPF(campoCPF.text);
+			}
+			public function listHopedeCpf(event:ResultEvent):void{
+				FlexGlobals.topLevelApplication.objHospedeSelecionado = event.result as Hospede;
+				
+			}
 		]]>
 	</fx:Script>
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
+		<mx:RadioButtonGroup id="tipoEstadia"/>
 	</fx:Declarations>
-	<mx:DateChooser x="10" y="10" selectedDate="{new Date()}"
-					yearNavigationEnabled="true"
-					dayNames="['D','S','T','Q','Q','S','S']" monthNames="['Janeiro','Fevereiro','Março','Abril',
-					'Maio','Junho','Julho','Agosto','Setembro','Outubro',
-					'Novembro','Dezembro']"/>
+					<!--
+					Usar para realizar reservas 
+					disabledRanges="{[new Date(2012,4,14),new Date(2012,4,16),new Date(2012,4,19)]}"-->
+	<mx:DateChooser 
+		id="calendario"
+		x="10" y="10" dayNames="['D','S','T','Q','Q','S','S']" enabled="false"
+		monthNames="{FlexGlobals.topLevelApplication.meses}"
+		selectableRange="{{rangeStart: new Date()}}" selectedDate="{new Date()}"
+		yearNavigationEnabled="true"/>
 	<s:Label x="205" y="12" text="Selecione o Hotel:"/>
-	<mx:ComboBox id="cbHotel" x="205" y="30" width="192"/>
+	<mx:ComboBox 
+		dataProvider="{FlexGlobals.topLevelApplication.listaHoteis}"
+		labelField="nome"
+		change="selecionarHotel(event)"
+		id="cbHotel" x="205" y="30" width="192"/>
 	<s:Label x="212" y="72" text="CPF:"/>
 	<util:MasterTextInput 
 		fullText="{FlexGlobals.topLevelApplication.objHospedeSelecionado.cpf}"
 		inputMask="999.999.999-99"
+		change="{campoNomeHospede.text = '';}"
 		id="campoCPF" x="210" y="88" width="124" blankMaskChar=" "
 		 nextFocusOnEnter="true"/>
 	<s:Label x="423" y="12" text="Selecione o quarto:"/>
-	<mx:ComboBox x="423" y="30" width="141"/>
+	<mx:ComboBox 
+		dataProvider="{FlexGlobals.topLevelApplication.objHotelSelecionado.quartos}"
+		id="cbQuarto"
+		labelField="num"
+		x="423" y="30" width="141"/>
 	<mx:HRule x="208" y="64" width="610"/>
 	<s:Label x="395" y="73" text="Nome Hospede:"/>
-	<mx:Button id="btBuscarCPF" x="342" y="87" icon="{Imagens.localizar}"/>
-	<util:MasterTextInput x="398" y="88" width="351"/>
-	<mx:Button id="btAbrirHospede" x="762" y="87" icon="{Imagens.localizar}"/>
-	<util:RowColorDataGrid 
-		x="9" y="198" width="809" height="248">
+	<mx:Button id="btBuscarCPF" 
+			   x="342" y="87" icon="{Imagens.localizar}"
+			   click="buscarHospedeCPF(event)"/>
+	<util:MasterTextInput 
+		change="{campoCPF.text = '';}"
+		enabled="false"
+		text="{FlexGlobals.topLevelApplication.objHospedeSelecionado.nome}"
+		id="campoNomeHospede" x="398" y="88" width="351"/>
+	<mx:Button id="btAbrirHospede" 
+			   x="762" y="87" icon="{Imagens.localizar}"
+			   click="FlexGlobals.topLevelApplication.abrirPrincipalHospede()"/>
+	<util:RowColorDataGrid
+		dataProvider="{dpReservas}"
+		x="9" y="213" width="809" height="248">
 		<util:columns>
 			<mx:DataGridColumn headerText="Data Reserva" width="120"
-							   dataField="codigo"
+							   dataField="dataReserva"
 							   />
 			<mx:DataGridColumn headerText="Nome do Hospede"
-							   dataField="nome"
+							   dataField="hospede.nome"
 							   />
 			<mx:DataGridColumn headerText="Data Inicio" width="100"
-							   dataField="gerente"
+							   dataField="dataInicio"
 							   />
 			<mx:DataGridColumn headerText="Data Fim" width="100"
-							   dataField="telefone"
+							   dataField="dataFim"
 							   />
 			<mx:DataGridColumn headerText="Situação" width="100"
-							   dataField="telefone"
+							   dataField="quarto.num"
 							   />
 		</util:columns>
 	</util:RowColorDataGrid>
-	<mx:Canvas x="80" y="451" width="67" height="10" backgroundColor="#FFFF00"/>
+	<mx:Canvas x="80" y="469" width="67" height="10" backgroundColor="#FFFF00"/>
 	<mx:Canvas x="-1" y="484" width="829" height="42">
 		<mx:Button id="btFechar" x="730" y="10" width="89" label="Fechar" icon="{Imagens.cancelar}"/>
 		<mx:Button 
@@ -70,11 +140,29 @@
 			label="Excluir" icon="{Imagens.excluir}"
 			/>
 	</mx:Canvas>
-	<s:Label x="11" y="451" text="Reservado"/>
-	<mx:Canvas x="230" y="451" width="67" height="10" backgroundColor="#00FF00"/>
-	<mx:Canvas x="420" y="451" width="67" height="10" backgroundColor="#FF0000"/>
-	<s:Label x="311" y="451" text="Reservas vencidas"/>
-	<s:Label x="161" y="451" text="Hospedado"/>
+	<s:Label x="11" y="469" text="Reservado"/>
+	<mx:Canvas x="243" y="469" width="67" height="10" backgroundColor="#00FF00"/>
+	<mx:Canvas x="433" y="469" width="67" height="10" backgroundColor="#FF0000"/>
+	<s:Label x="324" y="469" text="Reservas vencidas"/>
+	<s:Label x="161" y="469" text="Hospedagem"/>
+	<s:Label x="429" y="118" text="Período de estadia:"/>
+	<mx:DateField 
+		toolTip="Selecione a data inicial"
+		id="campoDataInicio" x="429" y="149" width="111"/>
+	<mx:HRule x="429" y="138" width="261" height="3"/>
+	<s:Label x="556" y="155" text="a"/>
+	<mx:DateField 
+		toolTip="Selecione a data final"
+		id="campoDataFim" x="579" y="149" width="111"/>
+	<s:Label x="210" y="120" text="Tipo de estadia:"/>
+	<mx:HRule x="210" y="138" width="200" height="3"/>
+	<mx:RadioButton x="214" y="152" label="Reserva" groupName="tipoEstadia"/>
+	<mx:RadioButton x="307" y="152" label="Hospedagem" groupName="tipoEstadia"/>
+	<mx:Button 
+		id="btGravar" x="726" y="148" 
+		label="Gravar" icon="{Imagens.confirmar}" click="gravarReservaHospedagem(event)"/>
+	<s:Label x="10" y="195" text="Lista de reservas e/ou hospedagens"/>
+	<mx:HRule x="10" y="208" width="809"/>
 	
 	
 </mx:TitleWindow>
