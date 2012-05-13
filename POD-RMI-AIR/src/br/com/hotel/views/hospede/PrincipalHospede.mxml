@@ -37,7 +37,8 @@
 				}
 			}
 			protected function buscarHospdeResult(event:ResultEvent):void{
-				dpHospedes.removeAll();
+				
+				dpHospedes = new ArrayCollection();
 				desabilitarBotoes();
 				if(event.result as Hospede)
 					dpHospedes.addItem(event.result);
@@ -82,6 +83,12 @@
 				FlexGlobals.topLevelApplication.objHospedeSelecionado = dgHospedes.selectedItem as Hospede;
 				FlexGlobals.topLevelApplication.abrirNovoHospede();
 				FlexGlobals.topLevelApplication.novoHospede.btGravar.label = 'Alterar';
+			}
+			
+			protected function confirmaSelecaoHospede(event:MouseEvent):void
+			{
+				FlexGlobals.topLevelApplication.objHospedeSelecionado = dgHospedes.selectedItem as Hospede;
+				FlexGlobals.topLevelApplication.fechar(this);
 			}
 			
 		]]>
@@ -148,7 +155,7 @@
 			width="94" label="Excluir" click="excluirHospede(event)"/>
 		<mx:Button 
 			icon="{Imagens.confirmar}"
-			id="btConfirmar" x="316" y="11" 
+			id="btConfirmar" x="316" y="11" click="confirmaSelecaoHospede(event)"
 			width="118" label="Confirmar"/>
 	</mx:Canvas>
 </mx:TitleWindow>
