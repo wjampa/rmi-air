@@ -16,6 +16,7 @@ import br.com.hotel.views.quarto.TelaPrincipalQuarto;
 import br.com.hotel.views.reserva.PrincipalReserva;
 import br.com.hotel.views.reserva.TelaPrincipalReserva;
 
+import mx.collections.ArrayCollection;
 import mx.core.UIComponent;
 import mx.managers.PopUpManager;
 import mx.rpc.events.FaultEvent;
@@ -43,6 +44,7 @@ public var novoQuarto:NovoQuarto;
 public var principalReserva:PrincipalReserva;
 //public var telaCarregando:telaCarregando;i]
 
+public var meses:Array = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
 /*
  *Objeto que serão utilizados em toda a plicacao 
 */
@@ -57,6 +59,13 @@ public var objQuartoSelecionado:Quarto = new Quarto();
 
 [Binable]
 public var objReservaSelecionada:Reserva = new Reserva();
+
+[Bindable]
+public var listaHoteis:ArrayCollection = new ArrayCollection();
+
+[Bindable]
+public var listaQuartos:ArrayCollection = new ArrayCollection();
+
 /*
  *Fim Objetos 
  */
