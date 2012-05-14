@@ -132,14 +132,25 @@
 				trace(ObjectUtil.dateCompare(item.dataFim,new Date()));
 				if (item.hospedagem == null)
 					if(ObjectUtil.dateCompare(item.dataFim,new Date())> -1)
-						return 0xFFFF00;
+						return 0xFDFE8C;
 					else
-						return 0xFF0000;
+						return 0xFF6161;
 				else if (item.hospedagem != null)
-					return 0x00FF00;
+					return 0xA2FEA2;
 				else
 					return color;
 			}
+			
+			protected function hospedarSelecionado(event:MouseEvent):void
+			{
+				reserva = dgReservas.selectedItem as Reserva;
+				if(reserva.hospedagem == null){
+					
+				}else{
+					Alert.show("Linha selecionada já está hospedada","ATENÇÃO");
+				}	
+			}
+			
 		]]>
 	</fx:Script>
 	<fx:Declarations>
@@ -186,6 +197,7 @@
 			   x="762" y="87" icon="{Imagens.localizar}"
 			   click="FlexGlobals.topLevelApplication.abrirPrincipalHospede()"/>
 	<util:RowColorDataGrid
+		id="dgReservas"
 		rowColorFunction="pintarLinhas"
 		dataProvider="{FlexGlobals.topLevelApplication.objHotelSelecionado.reservas}"
 		x="9" y="213" width="809" height="248">
@@ -215,24 +227,25 @@
 							   />
 		</util:columns>
 	</util:RowColorDataGrid>
-	<mx:Canvas x="80" y="469" width="67" height="10" backgroundColor="#FFFF00"/>
+	<mx:Canvas x="80" y="469" width="67" height="10" backgroundColor="#FDFE8C"/>
 	<mx:Canvas x="-1" y="484" width="829" height="42">
 		<mx:Button id="btFechar" x="730" y="10" width="89" label="Fechar" icon="{Imagens.cancelar}"/>
 		<mx:Button 
 			id="btNovo" x="10" y="10" width="89" 
 			label="Novo" icon="{Imagens.adicionar}"/>
 		<mx:Button 
-			id="btAlterar" x="108" y="10" width="89" 
-			label="Alterar" icon="{Imagens.alterar}"
+			id="btHospedar" x="108" y="10" width="111" 
+			label="Hospedar" icon="{Imagens.alterar}"
+			click="hospedarSelecionado(event)"
 			/>
 		<mx:Button 
-			id="btExcluir" x="207" y="10" width="109" 
-			label="Excluir" icon="{Imagens.excluir}"
+			id="btExcluir" x="227" y="10" width="123" 
+			label="Finalizar" icon="{Imagens.excluir}"
 			/>
 	</mx:Canvas>
 	<s:Label x="11" y="469" text="Reservado"/>
-	<mx:Canvas x="243" y="469" width="67" height="10" backgroundColor="#00FF00"/>
-	<mx:Canvas x="433" y="469" width="67" height="10" backgroundColor="#FF0000"/>
+	<mx:Canvas x="243" y="469" width="67" height="10" backgroundColor="#A2FEA2"/>
+	<mx:Canvas x="433" y="469" width="67" height="10" backgroundColor="#FF6161"/>
 	<s:Label x="324" y="469" text="Reservas vencidas"/>
 	<s:Label x="161" y="469" text="Hospedagem"/>
 	<s:Label x="429" y="118" text="Período de estadia:"/>
