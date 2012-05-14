@@ -143,15 +143,3 @@ public function centralizarTela(componente:UIComponent):void {
 public function fechar(componente:UIComponent):void {
 	PopUpManager.removePopUp(componente);
 }
-public function calcRowColor(item:Object, rowIndex:int, dataIndex:int, color:uint):uint {
-	if (item.status == "EM ABERTO")
-		return 0xE2E8F4;
-	else if (item.status == "EM PROCESSO")
-		return 0xFFEFDB;
-	else if (item.status == "PRONTO")
-		return 0xC1FFC1;
-	else if (item.status == "ENTREGUE")
-		return 0xFFFACD;
-	else
-		return color;
-}

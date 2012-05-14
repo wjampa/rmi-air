@@ -43,6 +43,7 @@
 			<flerry:NativeMethod id="setExcluirHotel" name="excluirHotel" />
 			<flerry:NativeMethod id="getHotel" name="buscarHotel"/>
 			<flerry:NativeMethod id="getHotelNome" name="buscarHotelNome"/>
+			<flerry:NativeMethod id="getAdicionarReserva" name="adicionarReserva"/>
 		</flerry:NativeObject> 
 		
 		<flerry:NativeObject id="quartoControle" source="br.com.hotel.controle.QuartoControle"

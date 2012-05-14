@@ -8,22 +8,32 @@
 				layout="absolute" showCloseButton="true" title="Cadastro de Reservas ou Hospedagens">
 	<fx:Script>
 		<![CDATA[
+			import br.com.hotel.modelo.Hospedagem;
 			import br.com.hotel.modelo.Hospede;
 			import br.com.hotel.modelo.Hotel;
+			import br.com.hotel.modelo.Quarto;
 			import br.com.hotel.modelo.Reserva;
 			import br.com.hotel.util.Imagens;
 			
 			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
 			import mx.core.FlexGlobals;
 			import mx.events.FlexEvent;
 			import mx.events.ListEvent;
+			import mx.formatters.DateFormatter;
 			import mx.rpc.events.ResultEvent;
+			import mx.utils.ObjectUtil;
 			
 			public var hotel:Hotel = new Hotel();
 			[Bindable]
 			public var dpReservas:ArrayCollection = new ArrayCollection();
+			[Bindable]
+			public var reserva:Reserva = new Reserva();
+			public var dataFormatada:DateFormatter = new DateFormatter();
 			protected function inicializar(event:FlexEvent):void
 			{
+				dataFormatada.formatString = "DD/MM/YYYY JJ:SS";
+				FlexGlobals.topLevelApplication.objHospedeSelecionado = new Hospede();
 				FlexGlobals.topLevelApplication.getListHoteis.addEventListener(ResultEvent.RESULT,listaHoteisResult);
 				FlexGlobals.topLevelApplication.hotelControle.getHoteis();
 				
@@ -44,10 +54,55 @@
 			
 			protected function gravarReservaHospedagem(event:MouseEvent):void
 			{
-				// TODO Auto-generated method stub
+				var erros:String = new String();
+				reserva = new Reserva();
+				if(FlexGlobals.topLevelApplication.objHospedeSelecionado.cpf == null)
+					erros += "SELECIONE UM HOSPEDE\n";
+				
+				if(tipoEstadia.selectedValue == null)
+					erros += "SELECIONE O TIPO DE ESTADIA\n";
+				
+				if(erros.length>0){
+					Alert.show(erros,"ATENÇÃO");
+					return;
+				}
+				//Preencher oo objeto reserva
+				reserva.dataReserva = new Date();
+				reserva.dataInicio = campoDataInicio.selectedDate;
+				reserva.dataFim = campoDataFim.selectedDate;
+				reserva.hospede = FlexGlobals.topLevelApplication.objHospedeSelecionado;
+				reserva.quarto = cbQuarto.selectedItem as Quarto;
+				if(tipoEstadia.selectedValue.toString() == "Hospedagem"){
+					var hospedagem:Hospedagem = new Hospedagem();
+					hospedagem.dataInicioHospedagem = campoDataInicio.selectedDate;
+					hospedagem.dataFimHospedagem = campoDataFim.selectedDate;
+					hospedagem.dataInicioHospedagem.setHours(12,00,00,00);
+					hospedagem.dataFimHospedagem.setHours(12,00,00,00);
+					hospedagem.reserva = reserva;
+					reserva.hospedagem = hospedagem;
+				}
+				FlexGlobals.topLevelApplication.objHotelSelecionado.reservas.addItem(reserva);
+				
+				FlexGlobals.topLevelApplication.getAdicionarReserva.addEventListener(ResultEvent.RESULT,adicionarReservarResult);
+				FlexGlobals.topLevelApplication.hotelControle.adicionarReserva(
+					FlexGlobals.topLevelApplication.objHotelSelecionado,
+					reserva.quarto,reserva
+				);
+			}
+			public function adicionarReservarResult(event:ResultEvent):void{
+				if(event.result){
+					Alert.show("Cadastro realizado com sucesso");
+					limparCampos();
+					cbHotel.selectedItem =FlexGlobals.topLevelApplication.objHotelSelecionado;
+				}
+			}
+			public function limparCampos():void{
+				FlexGlobals.topLevelApplication.objHospedeSelecionado = new Hospede();
+				campoDataFim.selectedDate = null;
+				campoDataInicio.selectedDate = null;
+				
 				
 			}
-			
 			protected function buscarHospedeCPF(event:MouseEvent):void
 			{
 				FlexGlobals.topLevelApplication.getListHospedeCPF.addEventListener(ResultEvent.RESULT,listHopedeCpf);
@@ -56,6 +111,34 @@
 			public function listHopedeCpf(event:ResultEvent):void{
 				FlexGlobals.topLevelApplication.objHospedeSelecionado = event.result as Hospede;
 				
+			}
+			public function funcaoLabel(item:Object,coluna:DataGridColumn):String{
+				
+				if(coluna.dataField == "dataReserva")
+					return dataFormatada.format(item.dataReserva);
+				if(coluna.dataField == "dataInicio")
+					return dataFormatada.format(item.dataInicio);
+				if(coluna.dataField == "dataFim")
+					return dataFormatada.format(item.dataFim);
+				return "";
+			}
+			public function funcaoLabelSituacao(item:Object,coluna:DataGridColumn):String{
+				if(item.hospedagem == null)
+					return "Reserva";
+				else
+					return "Hospedado";
+			}
+			public function pintarLinhas(item:Object, rowIndex:int, dataIndex:int, color:uint):uint {
+				trace(ObjectUtil.dateCompare(item.dataFim,new Date()));
+				if (item.hospedagem == null)
+					if(ObjectUtil.dateCompare(item.dataFim,new Date())> -1)
+						return 0xFFFF00;
+					else
+						return 0xFF0000;
+				else if (item.hospedagem != null)
+					return 0x00FF00;
+				else
+					return color;
 			}
 		]]>
 	</fx:Script>
@@ -82,7 +165,6 @@
 	<util:MasterTextInput 
 		fullText="{FlexGlobals.topLevelApplication.objHospedeSelecionado.cpf}"
 		inputMask="999.999.999-99"
-		change="{campoNomeHospede.text = '';}"
 		id="campoCPF" x="210" y="88" width="124" blankMaskChar=" "
 		 nextFocusOnEnter="true"/>
 	<s:Label x="423" y="12" text="Selecione o quarto:"/>
@@ -97,7 +179,6 @@
 			   x="342" y="87" icon="{Imagens.localizar}"
 			   click="buscarHospedeCPF(event)"/>
 	<util:MasterTextInput 
-		change="{campoCPF.text = '';}"
 		enabled="false"
 		text="{FlexGlobals.topLevelApplication.objHospedeSelecionado.nome}"
 		id="campoNomeHospede" x="398" y="88" width="351"/>
@@ -105,23 +186,32 @@
 			   x="762" y="87" icon="{Imagens.localizar}"
 			   click="FlexGlobals.topLevelApplication.abrirPrincipalHospede()"/>
 	<util:RowColorDataGrid
-		dataProvider="{dpReservas}"
+		rowColorFunction="pintarLinhas"
+		dataProvider="{FlexGlobals.topLevelApplication.objHotelSelecionado.reservas}"
 		x="9" y="213" width="809" height="248">
 		<util:columns>
 			<mx:DataGridColumn headerText="Data Reserva" width="120"
 							   dataField="dataReserva"
+							   labelFunction="funcaoLabel"
 							   />
 			<mx:DataGridColumn headerText="Nome do Hospede"
 							   dataField="hospede.nome"
 							   />
-			<mx:DataGridColumn headerText="Data Inicio" width="100"
+			<mx:DataGridColumn headerText="Data Inicio" width="120"
 							   dataField="dataInicio"
+							   labelFunction="funcaoLabel"
 							   />
-			<mx:DataGridColumn headerText="Data Fim" width="100"
+			<mx:DataGridColumn headerText="Data Fim" width="120"
 							   dataField="dataFim"
+							   labelFunction="funcaoLabel"
 							   />
-			<mx:DataGridColumn headerText="Situação" width="100"
+			<mx:DataGridColumn headerText="Num Quarto" width="80"
+							   
 							   dataField="quarto.num"
+							   />
+			<mx:DataGridColumn headerText="Situacao" width="100"
+							   dataField="hospedagem"
+							   labelFunction="funcaoLabelSituacao"
 							   />
 		</util:columns>
 	</util:RowColorDataGrid>
@@ -148,11 +238,13 @@
 	<s:Label x="429" y="118" text="Período de estadia:"/>
 	<mx:DateField 
 		toolTip="Selecione a data inicial"
+		formatString="DD/MM/YYYY"
 		id="campoDataInicio" x="429" y="149" width="111"/>
 	<mx:HRule x="429" y="138" width="261" height="3"/>
 	<s:Label x="556" y="155" text="a"/>
 	<mx:DateField 
 		toolTip="Selecione a data final"
+		formatString="DD/MM/YYYY"
 		id="campoDataFim" x="579" y="149" width="111"/>
 	<s:Label x="210" y="120" text="Tipo de estadia:"/>
 	<mx:HRule x="210" y="138" width="200" height="3"/>
