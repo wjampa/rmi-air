@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.hotel.modelo.Hotel;
+import br.com.hotel.modelo.Quarto;
+import br.com.hotel.modelo.Reserva;
 import br.com.hotel.rmi.cliente.Servico;
 import br.com.hotel.servico.IredeHoteleira;
 
@@ -62,6 +64,16 @@ public class HotelControle {
 		try{
 			return servico.excluirHotel(hotel);
 		}catch (RemoteException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+	public boolean adicionarReserva(Hotel hotel, Quarto quarto, Reserva reserva){
+		
+		try {
+			return  servico.adicionarReserva(hotel, quarto, reserva);
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return false;

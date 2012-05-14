@@ -12,6 +12,7 @@ import br.com.hotel.modelo.Hospede;
 import br.com.hotel.modelo.Hotel;
 import br.com.hotel.modelo.Quarto;
 import br.com.hotel.modelo.RedeHoteleira;
+import br.com.hotel.modelo.Reserva;
 
 public class DAOArquivo {
 	
@@ -40,18 +41,7 @@ public class DAOArquivo {
 		}
 	
 	}
-	
-	public int quartosPorAndar(String codigoHotel,String andar){
-		int count=0;
-		for (Hotel h : redeHoteleira.getHoteis()){
-			if(h.getCodigo().equals(codigoHotel)){
-				for(Quarto q : h.getQuartos())
-					if(q.getAndar()==andar)
-						count++;
-			}
-		}
-		return count;
-	}
+
 	/*
 	 * Quartos
 	 */
@@ -215,6 +205,25 @@ public class DAOArquivo {
 				redeHoteleira.getHospedes().remove(h);
 				if(atualizarArquivo())
 					return true;
+			}
+		}
+		return false;
+	}
+	/*
+	 * Reservas
+	 */
+	public boolean adicionarReserva(Hotel hotel, Quarto quarto, Reserva reserva){
+		
+		for(Hotel h:redeHoteleira.getHoteis()){
+			if(h.getCodigo().equals(hotel.getCodigo())){
+				for(Quarto q:h.getQuartos()){
+					if(q.getNum() == quarto.getNum()){
+						q.getReservas().add(reserva);
+						h.getReservas().add(reserva);
+						return atualizarArquivo();
+					}
+				}
+				
 			}
 		}
 		return false;
