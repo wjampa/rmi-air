@@ -40,6 +40,7 @@
 				if(event.result as Quarto){
 					Alert.show("Quarto Cadastrado com Sucesso!","ATENÇÃO");
 					FlexGlobals.topLevelApplication.objHotelSelecionado.quartos.addItem(event.result as Quarto);
+					FlexGlobals.topLevelApplication.objHotelSelecionado.quartos.refresh();
 					FlexGlobals.topLevelApplication.fechar(this);
 				}else{
 					Alert.show("Erro ao cadastrar o quarto","ATENÇÃO");
@@ -62,8 +63,9 @@
 		<mx:Button 
 			icon="{Imagens.confirmar}"
 			id="btGravar" x="348" y="11" 
-			width="94" label="Gravar" click="gravarQuarto(event)"/>
+			width="94" label="Gravar" click="btGravar.enabled=false;gravarQuarto(event)"/>
 		<mx:Button 
+			click="{FlexGlobals.topLevelApplication.fechar(this)}"
 			icon="{Imagens.cancelar}"
 			id="btFechar" x="456" y="11" 
 			width="94" label="Fechar"/>
