@@ -78,6 +78,15 @@ public class HotelControle {
 		}
 		return false;
 	}
+	public boolean efetuarHospedagem(Hotel hotel,Reserva reserva){
+		try {
+			return servico.efetuarHospedagem(hotel, reserva);
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
+	}
 	public static void main(String[] args){
 		HotelControle hotel = new HotelControle();
 		Hotel h = new Hotel();

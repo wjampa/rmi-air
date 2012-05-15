@@ -24,7 +24,12 @@ mx|TitleWindow {
 	borderColor: #3C7AA9;
 	backgroundColor: #F0F8FD;
 }
-
+mx|Panel {
+	
+	borderAlpha: 1.0;
+	borderColor: #3C7AA9;
+	backgroundColor: #F0F8FD;
+}
 mx|Canvas{
 	background-color: white;
 }

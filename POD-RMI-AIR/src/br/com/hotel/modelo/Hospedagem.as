@@ -6,8 +6,6 @@ package br.com.hotel.modelo
 	{
 		public var dataInicioHospedagem:Date;
 		public var dataFimHospedagem:Date;
-		public var hospede:Hospede;
-		public var reserva:Reserva;
 		public var pago:Boolean;
 		public function Hospedagem()
 		{

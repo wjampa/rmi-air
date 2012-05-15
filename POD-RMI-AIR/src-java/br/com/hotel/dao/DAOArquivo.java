@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import br.com.hotel.modelo.Hospede;
@@ -220,11 +221,57 @@ public class DAOArquivo {
 					if(q.getNum() == quarto.getNum()){
 						q.getReservas().add(reserva);
 						h.getReservas().add(reserva);
+						buscarHospedeCPF(reserva.getHospede().getCpf()).getReservas().add(reserva);
 						return atualizarArquivo();
 					}
 				}
 				
 			}
+		}
+		return false;
+	}
+	public Reserva localizarReserva(Hotel hotel, Date dataReservar){
+		for(Hotel h:redeHoteleira.getHoteis()){
+			if(h.getCodigo().equals(hotel.getCodigo())){
+				for(Reserva reserva:h.getReservas()){
+					if(reserva.getDataReserva().equals(dataReservar)){
+						return reserva;
+					}
+				}
+			}
+		}
+		return null;
+	}
+	/*
+	 * Hospedagens
+	 */
+	public boolean efetuarHospedagem(Hotel hotel,Reserva reserva){
+		
+		Hotel h = buscarHotel(hotel.getCodigo());
+		Reserva r = localizarReserva(h, reserva.getDataReserva());
+		List<Hospede> hospedes = getHospedes();
+		
+		//removendo a reser do hospede e adicionando 
+		//a nova reserva com  a hospedagem
+		for(Hospede hospede:hospedes){
+			if(hospede.getCpf().equals(r.getHospede().getCpf())){
+				hospede.getReservas().remove(r);
+				hospede.getReservas().add(reserva);
+			}
+		}
+		//Remover e adicionar a reserva em hotel
+		h.getReservas().remove(r);
+		h.getReservas().add(reserva);
+		//remover e adicionar a reserva em quarto
+		for(Quarto q:h.getQuartos()){
+			if(reserva.getQuarto().getNum() == q.getNum()){
+				q.getReservas().remove(r);
+				q.getReservas().add(reserva);
+			}
+		}
+		
+		if(atualizarArquivo()){
+			return true;
 		}
 		return false;
 	}
