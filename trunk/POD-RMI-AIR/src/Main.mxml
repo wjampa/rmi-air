@@ -44,6 +44,7 @@
 			<flerry:NativeMethod id="getHotel" name="buscarHotel"/>
 			<flerry:NativeMethod id="getHotelNome" name="buscarHotelNome"/>
 			<flerry:NativeMethod id="getAdicionarReserva" name="adicionarReserva"/>
+			<flerry:NativeMethod id="getEfetuarHospedagem" name="efetuarHospedagem"/>
 		</flerry:NativeObject> 
 		
 		<flerry:NativeObject id="quartoControle" source="br.com.hotel.controle.QuartoControle"

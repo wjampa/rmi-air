@@ -44,10 +44,9 @@ public class SRedeHoteleria extends UnicastRemoteObject implements
 
 
 	@Override
-	public String efetuarHospedagem(String codigoHotel, String cpfHospede)
+	public boolean efetuarHospedagem(Hotel hotel, Reserva reserva)
 			throws RemoteException {
-		// TODO Auto-generated method stub
-		return null;
+		return arquivoDao.efetuarHospedagem(hotel, reserva);
 	}
 
 	@Override

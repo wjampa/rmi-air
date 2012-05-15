@@ -18,11 +18,13 @@
 			import mx.collections.ArrayCollection;
 			import mx.controls.Alert;
 			import mx.core.FlexGlobals;
+			import mx.events.CloseEvent;
 			import mx.events.FlexEvent;
 			import mx.events.ListEvent;
 			import mx.formatters.DateFormatter;
 			import mx.rpc.events.ResultEvent;
 			import mx.utils.ObjectUtil;
+
 			
 			public var hotel:Hotel = new Hotel();
 			[Bindable]
@@ -32,7 +34,11 @@
 			public var dataFormatada:DateFormatter = new DateFormatter();
 			protected function inicializar(event:FlexEvent):void
 			{
-				dataFormatada.formatString = "DD/MM/YYYY JJ:SS";
+				Alert.yesLabel = "SIM";
+				Alert.noLabel = "NÃO";
+				dpReservas.removeAll();
+				dataFormatada.formatString = "DD/MM/YYYY HH:SS";
+				FlexGlobals.topLevelApplication.objHotelSelecionado = new Hotel();
 				FlexGlobals.topLevelApplication.objHospedeSelecionado = new Hospede();
 				FlexGlobals.topLevelApplication.getListHoteis.addEventListener(ResultEvent.RESULT,listaHoteisResult);
 				FlexGlobals.topLevelApplication.hotelControle.getHoteis();
@@ -45,7 +51,7 @@
 			protected function selecionarHotel(event:ListEvent):void
 			{
 				FlexGlobals.topLevelApplication.objHotelSelecionado = cbHotel.selectedItem as Hotel;
-				dpReservas.removeAll();
+					dpReservas.removeAll();
 				for each(var r:Reserva in FlexGlobals.topLevelApplication.objHotelSelecionado.reservas){
 					dpReservas.addItem(r);
 				}
@@ -66,6 +72,12 @@
 					Alert.show(erros,"ATENÇÃO");
 					return;
 				}
+				
+				if(verificarDebitoHospede(FlexGlobals.topLevelApplication.objHospedeSelecionado)){
+					Alert.show("Hospede com debito\nDeseja visualizar local do debito","ATENÇÃO",Alert.YES|Alert.NO,null,visualizarLocalDebito);
+					return;
+				}
+					
 				//Preencher oo objeto reserva
 				reserva.dataReserva = new Date();
 				reserva.dataInicio = campoDataInicio.selectedDate;
@@ -78,16 +90,38 @@
 					hospedagem.dataFimHospedagem = campoDataFim.selectedDate;
 					hospedagem.dataInicioHospedagem.setHours(12,00,00,00);
 					hospedagem.dataFimHospedagem.setHours(12,00,00,00);
-					hospedagem.reserva = reserva;
 					reserva.hospedagem = hospedagem;
 				}
 				FlexGlobals.topLevelApplication.objHotelSelecionado.reservas.addItem(reserva);
-				
+				FlexGlobals.topLevelApplication.objHospedeSelecionado.reservas.addItem(reserva);
 				FlexGlobals.topLevelApplication.getAdicionarReserva.addEventListener(ResultEvent.RESULT,adicionarReservarResult);
 				FlexGlobals.topLevelApplication.hotelControle.adicionarReserva(
 					FlexGlobals.topLevelApplication.objHotelSelecionado,
 					reserva.quarto,reserva
 				);
+			}
+			public function visualizarLocalDebito(event:CloseEvent):void{
+				if(event.detail == Alert.YES){
+					for each(var q:Quarto in FlexGlobals.topLevelApplication.objHotelSelecionado.quartos){
+						for each(var r:Reserva in q.reservas){
+							if(r.hospedagem!=null)
+								if(!r.hospedagem.pago){
+									Alert.show("Numero Quarto: " + q.num 
+										+ "Valor: " + q.preco ,"ATENÇÃO");
+									return;
+								}
+									
+						}
+					}
+				}
+			}
+			public function verificarDebitoHospede(hospede:Hospede):Boolean{
+				for each(var r:Reserva in hospede.reservas){
+					if(r.hospedagem!=null)
+						if(!r.hospedagem.pago)
+							return true;
+				}
+				return false;
 			}
 			public function adicionarReservarResult(event:ResultEvent):void{
 				if(event.result){
@@ -143,12 +177,50 @@
 			
 			protected function hospedarSelecionado(event:MouseEvent):void
 			{
+				reserva = new Reserva();
 				reserva = dgReservas.selectedItem as Reserva;
 				if(reserva.hospedagem == null){
-					
+					panelHospedar.visible = true;
 				}else{
 					Alert.show("Linha selecionada já está hospedada","ATENÇÃO");
 				}	
+			}
+			
+			protected function gravarHospedagem(event:MouseEvent):void
+			{
+				if(hospedagemInicial.selectedDate == null){
+					Alert.show("Selecione a data de entrada","ATENÇÃO");
+				}else{
+
+					Alert.show("Receber Pagamento?","Efetuar Pagamento",Alert.YES|Alert.NO,null,confirmarHospedagemPagamento);
+				}
+				
+			}
+			public function confirmarHospedagemPagamento(event:CloseEvent):void	{
+				var hop:Hospedagem = new Hospedagem();
+				
+				if(event.detail == Alert.YES){
+					hop.pago = true;
+				}
+				hop.dataInicioHospedagem = hospedagemInicial.selectedDate;
+					if(hospedagemFinal.selectedDate != null)
+						hop.dataFimHospedagem = hospedagemFinal.selectedDate;
+				reserva.hospedagem = hop;
+				FlexGlobals.topLevelApplication.getEfetuarHospedagem.addEventListener(ResultEvent.RESULT,efetuarHospedagemResult);
+				FlexGlobals.topLevelApplication.hotelControle.efetuarHospedagem(
+						FlexGlobals.topLevelApplication.objHotelSelecionado,
+						reserva);
+				panelHospedar.visible = false;	
+			}	
+			protected function efetuarHospedagemResult(event:ResultEvent):void
+			{
+				// TODO Auto-generated method stub
+				if(event.result){
+					panelHospedar.visible = false;
+					Alert.show("Hospedagem realizada com sucesso!");
+				}else{
+					Alert.show("Hospedagem realizada com sucesso!");
+				}
 			}
 			
 		]]>
@@ -268,6 +340,51 @@
 		label="Gravar" icon="{Imagens.confirmar}" click="gravarReservaHospedagem(event)"/>
 	<s:Label x="10" y="195" text="Lista de reservas e/ou hospedagens"/>
 	<mx:HRule x="10" y="208" width="809"/>
+	<mx:Panel 
+		layout="absolute"
+		id="panelHospedar"
+		title="Hospedagem"
+		visible="false"
+		x="68" y="136" width="693" height="200">
+		<s:Label x="6" y="10" text="Data da Reserva:"/>
+		<mx:TextInput 
+			text="{dataFormatada.format(reserva.dataReserva)}"
+			x="6" y="28" width="134" enabled="false"/>
+		<s:Label x="173" y="10" text="Nome do Hospede:"/>
+		<mx:TextInput 
+			text="{reserva.hospede.nome}"
+			x="174" y="28" width="340" enabled="false"/>
+		<s:Label x="6" y="56" text="Periodo Reservado:"/>
+		<mx:TextInput 
+			text="{dataFormatada.format(reserva.dataInicio)}"
+			x="6" y="74" width="134" enabled="false"/>
+		<mx:TextInput 
+			text="{dataFormatada.format(reserva.dataFim)}"
+			x="174" y="74" width="134" enabled="false"/>
+		<s:Label x="153" y="79" text="a"/>
+		<mx:VRule x="320" y="65" width="1" height="29"/>
+		<s:Label x="330" y="56" text="Dados da Hospedagem:"/>
+		<mx:DateField 
+			toolTip="Selecione a data final"
+			formatString="DD/MM/YYYY"
+			id="hospedagemInicial" x="385" y="72" width="111"/>
+		<mx:DateField 
+			toolTip="Selecione a data final"
+			formatString="DD/MM/YYYY"
+			id="hospedagemFinal" x="553" y="72" width="111"/>
+		<s:Label x="329" y="77" text="Entrada:"/>
+		<s:Label x="513" y="78" text="Saída:"/>
+		<util:MasterTextInput x="535" y="28" width="124" blankMaskChar=" " enabled="false"
+							  fullText="{reserva.hospede.cpf}"
+							  inputMask="999.999.999-99" nextFocusOnEnter="true"/>
+		<s:Label x="538" y="11" text="CPF:"/>
+		<mx:Canvas width="673" height="47" x="0" y="112">
+			<mx:Button id="confirmarHospedagem" x="446" y="14" width="111" label="Confirmar"
+					   icon="{Imagens.confirmar}" click="gravarHospedagem(event)"/>
+			<mx:Button id="cancelarHospedagem" x="565" y="13" width="97" label="cancelar"
+					   click="{panelHospedar.visible = false}" icon="{Imagens.cancelar}"/>
+		</mx:Canvas>
+	</mx:Panel>
 	
 	
 </mx:TitleWindow>

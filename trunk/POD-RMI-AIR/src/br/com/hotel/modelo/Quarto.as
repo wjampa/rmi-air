@@ -11,7 +11,6 @@ package br.com.hotel.modelo
 		public var status:String;
 		public var preco:Number;
 		public var reservas:ArrayCollection = new ArrayCollection();
-		public var hospedagens:ArrayCollection = new ArrayCollection();
 		public function Quarto()
 		{
 		}

@@ -17,7 +17,6 @@ public interface IredeHoteleira extends Remote {
 	public String verificarReserva(String codigoHotel, Date dataInicio, Date dataFim) throws RemoteException;
 	
 	
-	public String efetuarHospedagem(String codigoHotel, String cpfHospede) throws RemoteException;
 	
 	public String fecharHospedagem(String codigoHotel, String cpfHospede, boolean pago) throws RemoteException;
 	
@@ -36,6 +35,7 @@ public interface IredeHoteleira extends Remote {
 /*
  * Metodos para hoteis
  */
+	public boolean efetuarHospedagem(Hotel hotel, Reserva reserva) throws RemoteException;
 	public List<Hotel> getHoteis() throws RemoteException;
 	public Hotel buscarHotel(String codigo) throws RemoteException;
 	public List<Hotel> buscarHotelNome(String nome) throws RemoteException;

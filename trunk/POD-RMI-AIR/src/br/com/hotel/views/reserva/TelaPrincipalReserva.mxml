@@ -86,8 +86,6 @@
 			//	if(tipo.selectedValue == "Hospedagem"){
 					hospedagem.dataInicioHospedagem = dtInicial.selectedDate;
 					hospedagem.dataFimHospedagem = dtFinal.selectedDate;
-					hospedagem.hospede = hospedeSelecionado as Hospede;
-					hospedagem.reserva = reserva;
 					reserva.hospedagem = hospedagem;
 				//}
 				
