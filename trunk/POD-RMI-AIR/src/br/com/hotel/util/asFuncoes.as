@@ -6,15 +6,11 @@ import br.com.hotel.views.carregando.TelaCarregando;
 import br.com.hotel.views.erro.ErroException;
 import br.com.hotel.views.hospede.NovoHospede;
 import br.com.hotel.views.hospede.PrincipalHospede;
-import br.com.hotel.views.hospede.TelaPrincipalHospede;
 import br.com.hotel.views.hotel.NovoHotel;
 import br.com.hotel.views.hotel.PrincipalHotel;
-import br.com.hotel.views.hotel.TelaPrincipalHotel;
 import br.com.hotel.views.quarto.NovoQuarto;
 import br.com.hotel.views.quarto.PrincipalQuarto;
-import br.com.hotel.views.quarto.TelaPrincipalQuarto;
 import br.com.hotel.views.reserva.PrincipalReserva;
-import br.com.hotel.views.reserva.TelaPrincipalReserva;
 
 import mx.collections.ArrayCollection;
 import mx.core.UIComponent;
@@ -22,14 +18,11 @@ import mx.managers.PopUpManager;
 import mx.rpc.events.FaultEvent;
 
 public var erroInformado:String = new String();
-
+[Bindable]
+public var textoCarregando:String = new String();
 
 
 public var telaErroException:ErroException;
-public var telaPrincipalHospede:TelaPrincipalHospede;
-public var telaPrincipalHotel:TelaPrincipalHotel;
-public var telaPrincipalQuartos:TelaPrincipalQuarto;
-public var telaPrincipalReserva:TelaPrincipalReserva;
 
 
 public var principalHospede:PrincipalHospede;
@@ -42,7 +35,7 @@ public var principalQuartos:PrincipalQuarto;
 public var novoQuarto:NovoQuarto;
 
 public var principalReserva:PrincipalReserva;
-//public var telaCarregando:telaCarregando;i]
+public var telaCarregando:TelaCarregando;
 
 public var meses:Array = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
 /*
@@ -116,19 +109,21 @@ public function abrirPrincipalReserva():void {
 	principalReserva = PopUpManager.createPopUp(this, PrincipalReserva, true) as PrincipalReserva;
 	centralizarTela(principalReserva);
 }
-/*public function abrirCarregando(texto:String):void{
-	telaCarregando = PopUpManager.createPopUp(this, telaCarregando, true) as telaCarregando;
-	telaCarregando.barraProgresso.label = texto;
+public function abrirCarregando():void{
+	telaCarregando = PopUpManager.createPopUp(this, TelaCarregando, true) as TelaCarregando;
+	telaCarregando.barraProgresso.label = textoCarregando;
 	centralizarTela(telaCarregando);
 }
 public function fecharCarregando():void{
 	PopUpManager.removePopUp(this.telaCarregando);
-}*/
+}
 public function onFault(event:FaultEvent):void {
 	erroInformado = new String();
 	erroInformado += event.token.message.destination;
 	erroInformado += "\n";
 	erroInformado += (event.fault.faultDetail + " - " + event.fault.faultString);
+	if(event.fault.faultDetail == "java.lang.reflect.InvocationTargetException")
+		erroInformado = "SERVIDOR OFF-LINE";
 	abrirErroException();
 }
 public function centralizarTela(componente:UIComponent):void {

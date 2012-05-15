@@ -29,11 +29,14 @@
 				}
 			}
 			protected function adicionarHotelResult(event:ResultEvent):void{
-				if(event.result as Hotel){
+				if(btGravar.label == "Gravar"){
 					Alert.show("Hotel cadastrado com sucesso!","ATENÇÃO");
-					FlexGlobals.topLevelApplication.objHotelSelecionado = event.result as Hotel;
-					FlexGlobals.topLevelApplication.fechar(this);
+				}else{
+					Alert.show("Hotel altualizado com sucesso!","ATENÇÃO");
 				}
+				FlexGlobals.topLevelApplication.principalHotel.campoNome.text = " ";
+				FlexGlobals.topLevelApplication.principalHotel.buscarHotel();
+				FlexGlobals.topLevelApplication.fechar(this);
 			}
 			protected function capturarCampos():Hotel{
 				hotel.codigo = campoCodigo.text;

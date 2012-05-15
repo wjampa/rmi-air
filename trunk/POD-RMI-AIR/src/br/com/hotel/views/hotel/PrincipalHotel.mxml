@@ -2,7 +2,7 @@
 <mx:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009"
 				xmlns:s="library://ns.adobe.com/flex/spark"
 				xmlns:mx="library://ns.adobe.com/flex/mx"
-				xmlns:util="br.com.hotel.util.*" creationComplete="desabilitarBotoes()"
+				xmlns:util="br.com.hotel.util.*" creationComplete="{desabilitarBotoes();iniciaListaHoteis()}"
 				width="710" height="422" close="FlexGlobals.topLevelApplication.fechar(this)"
 				layout="absolute" showCloseButton="true" title="Principal Hoteis">
 	<fx:Script>
@@ -13,25 +13,27 @@
 			import mx.collections.ArrayCollection;
 			import mx.controls.Alert;
 			import mx.core.FlexGlobals;
+			import mx.events.FlexEvent;
 			import mx.rpc.events.ResultEvent;
 			public var h:Hotel = new Hotel();
 			
 			[Bindable]
 			public var dpHoteis:ArrayCollection = new ArrayCollection();
-			protected function buscarHotel(event:MouseEvent):void
+			public function buscarHotel():void
 			{
 				if(campoCodigo.text != ''){
 					FlexGlobals.topLevelApplication.getHotel.addEventListener(ResultEvent.RESULT,buscarHotelResult);
-					FlexGlobals.topLevelApplication.hotelControle.buscarHotel(campoCodigo.text)
+					FlexGlobals.topLevelApplication.hotelControle.buscarHotel(campoCodigo.text);
 				}else{
 					FlexGlobals.topLevelApplication.getHotelNome.addEventListener(ResultEvent.RESULT,buscarHotelResult);
-					FlexGlobals.topLevelApplication.hotelControle.buscarHotelNome(campoNome.text)
+					FlexGlobals.topLevelApplication.hotelControle.buscarHotelNome(campoNome.text);
 				
 				}
 			}
 			protected function buscarHotelResult(event:ResultEvent):void{
+				FlexGlobals.topLevelApplication.fecharCarregando();
 				desabilitarBotoes();
-				dpHoteis.removeAll();
+				dpHoteis = new ArrayCollection();
 				if(event.result as Hotel){
 					dpHoteis.addItem(event.result);
 				}else{
@@ -45,6 +47,8 @@
 			protected function desabilitarBotoes():void{
 				btAlterar.enabled = false;
 				btExcluir.enabled = false;
+				
+
 			}
 			
 			protected function excluirHotel(event:MouseEvent):void
@@ -69,6 +73,15 @@
 				
 			}
 			
+			protected function iniciaListaHoteis():void
+			{
+				FlexGlobals.topLevelApplication.textoCarregando = "Aguarde Buscando Hoteis";
+				FlexGlobals.topLevelApplication.abrirCarregando();
+				FlexGlobals.topLevelApplication.getHotelNome.addEventListener(ResultEvent.RESULT,buscarHotelResult);
+				FlexGlobals.topLevelApplication.hotelControle.buscarHotelNome(" ");
+				
+			}
+			
 		]]>
 	</fx:Script>
 	<fx:Declarations>
@@ -85,7 +98,7 @@
 		text="{FlexGlobals.topLevelApplication.objHotelSelecionado.nome}"
 		id="campoNome" x="236" y="16" width="329"/>
 	<mx:Button 
-		click="buscarHotel(event)"
+		click="buscarHotel()"
 		id="btBuscar" x="581" y="15" width="97" 
 		label="Buscar" icon="{Imagens.localizar}"/>
 	<util:RowColorDataGrid 
@@ -110,7 +123,9 @@
 		</util:columns>
 	</util:RowColorDataGrid>
 	<mx:Canvas x="0" y="340" width="690" height="42">
-		<mx:Button id="btFechar" x="590" y="10" width="89" label="Fechar" icon="{Imagens.cancelar}"/>
+		<mx:Button 
+			click="{FlexGlobals.topLevelApplication.fechar(this)}"
+			id="btFechar" x="590" y="10" width="89" label="Fechar" icon="{Imagens.cancelar}"/>
 		<mx:Button 
 			id="btNovo" x="10" y="10" width="89" 
 			label="Novo" icon="{Imagens.adicionar}"

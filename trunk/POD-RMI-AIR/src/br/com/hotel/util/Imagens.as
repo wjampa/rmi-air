@@ -17,7 +17,15 @@ package br.com.hotel.util
 		[Embed(source="../imagens/link_reservas.png")]
 		[Bindable]
 		public static var link_reservas:Class;
-
+		
+		[Embed(source="../imagens/link_reserva.png")]
+		[Bindable]
+		public static var link_reserva:Class;
+		
+		
+		[Embed(source="../imagens/link_sair.png")]
+		[Bindable]
+		public static var link_sair:Class;
 		
 		[Embed(source="../imagens/add.png")]
 		[Bindable]
@@ -50,7 +58,7 @@ package br.com.hotel.util
 		[Bindable]
 		public static var excluir:Class;
 
-		[Embed(source="../imagens/hotel.jpg")]
+		[Embed(source="../imagens/background.png")]
 		[Bindable]
 		public static var hotel:Class;
 		

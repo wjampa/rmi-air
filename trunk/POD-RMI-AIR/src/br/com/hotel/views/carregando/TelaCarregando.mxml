@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
+<mx:Canvas xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
-		 xmlns:mx="library://ns.adobe.com/flex/mx" width="400" height="300">
+		 backgroundAlpha=".01"
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="400" height="50">
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
-	<mx:ProgressBar id="barraProgresso" indeterminate="true"
-					x="100" y="142"/>
-</mx:TitleWindow>
+	<mx:ProgressBar id="barraProgresso" x="10" y="15" width="380" indeterminate="true"/>
+</mx:Canvas>

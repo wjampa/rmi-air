@@ -19,6 +19,8 @@ public class SRedeHoteleria extends UnicastRemoteObject implements
 
 
 	private static final long serialVersionUID = 1L;
+	private boolean bloqueado = false;
+	
 	private DAOArquivo arquivoDao;
 	
 	public SRedeHoteleria() throws RemoteException {
@@ -36,7 +38,7 @@ public class SRedeHoteleria extends UnicastRemoteObject implements
 	}
 
 	@Override
-	public String verificarReserva(String codigoHotel, Date dataInicio,
+	public synchronized String verificarReserva(String codigoHotel, Date dataInicio,
 			Date dataFim) throws RemoteException {
 		// TODO Auto-generated method stub
 		return null;
@@ -44,19 +46,34 @@ public class SRedeHoteleria extends UnicastRemoteObject implements
 
 
 	@Override
-	public boolean efetuarHospedagem(Hotel hotel, Reserva reserva)
-			throws RemoteException {
-		return arquivoDao.efetuarHospedagem(hotel, reserva);
+	public synchronized boolean efetuarHospedagem(Hotel hotel, Reserva reserva)
+			throws Exception {
+		if(!bloqueado){
+			bloqueado = true;
+			try {
+				wait();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+				throw new Exception("Tentando acessar o banco...");
+			}
+			if(arquivoDao.efetuarHospedagem(hotel, reserva)){
+				bloqueado = false;
+				notifyAll();
+				return true;
+			}
+				
+		}
+		return bloqueado;
 	}
 
 	@Override
-	public String fecharHospedagem(String codigoHotel, String cpfHospede,
+	public synchronized String fecharHospedagem(String codigoHotel, String cpfHospede,
 			boolean pago) throws RemoteException {
 		return null;
 	}
 
 	@Override
-	public List<Hospedagem> verificarDividas(String cpfHospede, boolean pago)
+	public synchronized List<Hospedagem> verificarDividas(String cpfHospede, boolean pago)
 			throws RemoteException {
 		return null;
 	}
@@ -64,52 +81,52 @@ public class SRedeHoteleria extends UnicastRemoteObject implements
 	 * Quartos
 	 */
 	@Override
-	public Quarto adicionarQuarto(String codigoHotel, Quarto quarto)
+	public synchronized Quarto adicionarQuarto(String codigoHotel, Quarto quarto)
 			throws RemoteException {
 		return arquivoDao.adicionarQuarto(codigoHotel, quarto);
 	}
 	@Override
-	public Quarto alterarQuarto(String codigoHotel, String numeroQuarto,
+	public synchronized Quarto alterarQuarto(String codigoHotel, String numeroQuarto,
 			Quarto quarto) throws RemoteException {
 		return arquivoDao.alterarQuarto(codigoHotel, numeroQuarto, quarto);
 	}
 	@Override
-	public boolean excluirQuarto(String codigoHotel,Integer numeroQuarto) throws RemoteException {
+	public synchronized boolean excluirQuarto(String codigoHotel,Integer numeroQuarto) throws RemoteException {
 		return arquivoDao.excluirQuarto(codigoHotel, numeroQuarto);
 	}
 	/*
 	 * Hoteis
 	 */	
 	@Override
-	public List<Hotel> getHoteis() throws RemoteException {
+	public synchronized List<Hotel> getHoteis() throws RemoteException {
 		return arquivoDao.getHoteis();
 	}
 	@Override
-	public Hotel buscarHotel(String codigo) throws RemoteException {
+	public synchronized Hotel buscarHotel(String codigo) throws RemoteException {
 		return arquivoDao.buscarHotel(codigo);
 	}
 	@Override
-	public List<Hotel> buscarHotelNome(String nome) throws RemoteException {
+	public synchronized List<Hotel> buscarHotelNome(String nome) throws RemoteException {
 		return arquivoDao.buscarHotelNome(nome);
 	}
 	@Override
-	public boolean adicionarHotel(Hotel hotel) throws RemoteException {
+	public synchronized boolean adicionarHotel(Hotel hotel) throws RemoteException {
 		return arquivoDao.adicionarHotel(hotel);
 	}
 	@Override
-	public Hotel alterarHotel(String codigo,Hotel hotel) throws RemoteException {
+	public synchronized Hotel alterarHotel(String codigo,Hotel hotel) throws RemoteException {
 		return arquivoDao.alterarHotel(codigo,hotel);
 	}
 
 	@Override
-	public boolean excluirHotel(Hotel hotel) throws RemoteException {
+	public  synchronized boolean excluirHotel(Hotel hotel) throws RemoteException {
 		return arquivoDao.excluirHotel(hotel);
 	}
 	/*
 	 * Reservas 
 	 */
 	@Override
-	public boolean adicionarReserva(Hotel hotel, Quarto quarto, Reserva reserva)
+	public synchronized boolean adicionarReserva(Hotel hotel, Quarto quarto, Reserva reserva)
 			throws RemoteException {
 		return arquivoDao.adicionarReserva(hotel, quarto, reserva);
 	}
@@ -119,35 +136,32 @@ public class SRedeHoteleria extends UnicastRemoteObject implements
 	 */
 	
 	@Override
-	public List<Hospede> getHospodes() throws RemoteException {
+	public synchronized List<Hospede> getHospodes() throws RemoteException {
 		return arquivoDao.getHospedes();
 	}
 	@Override
-	public boolean adicionarHospede(Hospede hospede) throws RemoteException {
+	public synchronized boolean adicionarHospede(Hospede hospede) throws RemoteException {
 		// TODO Auto-generated method stub
 		return arquivoDao.adicionarHospede(hospede);
 	}
 	@Override
-	public List<Hospede> buscarHopedeNome(String nome) throws RemoteException {
+	public synchronized List<Hospede> buscarHopedeNome(String nome) throws RemoteException {
 		return arquivoDao.buscarHospedeNome(nome);
 	}
 
 	@Override
-	public Hospede buscarHopedeCPF(String cpf) throws RemoteException {
+	public synchronized Hospede buscarHopedeCPF(String cpf) throws RemoteException {
 		return arquivoDao.buscarHospedeCPF(cpf);
 	}
 
 	@Override
-	public Hospede alterarHospede(String cpf, Hospede hospede)
+	public synchronized Hospede alterarHospede(String cpf, Hospede hospede)
 			throws RemoteException {
 		return arquivoDao.alterarHospede(cpf, hospede);
 	}
 
 	@Override
-	public boolean excluirHospede(Hospede hospede) throws RemoteException {
+	public synchronized boolean excluirHospede(Hospede hospede) throws RemoteException {
 		return arquivoDao.excluirHospede(hospede);
 	}
-
-
-
 }
