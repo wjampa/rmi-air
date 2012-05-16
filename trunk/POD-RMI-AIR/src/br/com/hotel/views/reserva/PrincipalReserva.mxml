@@ -12,7 +12,7 @@
 			import br.com.hotel.modelo.Hospede;
 			import br.com.hotel.modelo.Hotel;
 			import br.com.hotel.modelo.Quarto;
-			import br.com.hotel.modelo.Reserva;
+			import br.com.hotel.modelo.Reserva; 
 			import br.com.hotel.util.Imagens;
 			
 			import mx.collections.ArrayCollection;

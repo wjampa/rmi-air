@@ -19,7 +19,7 @@ public class DAOArquivo {
 	
 	private RedeHoteleira redeHoteleira;
 	private String banco;
-	
+	 
 	public DAOArquivo(String arquivo) {
 		this.banco = arquivo;
 		try{

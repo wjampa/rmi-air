@@ -9,7 +9,7 @@ package br.com.hotel.modelo
 		public var num:Number;
 		public var andar:String;
 		public var status:String;
-		public var preco:Number;
+		public var preco:Number; 
 		public var reservas:ArrayCollection = new ArrayCollection();
 		public function Quarto()
 		{
