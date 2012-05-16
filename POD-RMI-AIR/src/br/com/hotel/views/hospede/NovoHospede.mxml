@@ -7,7 +7,7 @@
 				layout="absolute" showCloseButton="true" title="Cadastro de Hospedes">
 	<fx:Script>
 		<![CDATA[
-			import br.com.hotel.modelo.Hospede;
+			import br.com.hotel.modelo.Hospede; 
 			import br.com.hotel.util.Imagens;
 			
 			import mx.controls.Alert;

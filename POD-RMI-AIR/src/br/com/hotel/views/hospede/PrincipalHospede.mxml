@@ -7,7 +7,7 @@
 				width="714" height="430" close="FlexGlobals.topLevelApplication.fechar(this)"
 				layout="absolute" showCloseButton="true" title="Prinicpal Hospede">
 	<fx:Script>
-		<![CDATA[
+		<![CDATA[ 
 			import br.com.hotel.modelo.Hospedagem;
 			import br.com.hotel.modelo.Hospede;
 			import br.com.hotel.util.Imagens;

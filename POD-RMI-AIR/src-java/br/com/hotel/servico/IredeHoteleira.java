@@ -15,7 +15,7 @@ public interface IredeHoteleira extends Remote {
 
 		
 	public String verificarReserva(String codigoHotel, Date dataInicio, Date dataFim) throws RemoteException;
-	
+	 
 	
 	
 	public String fecharHospedagem(String codigoHotel, String cpfHospede, boolean pago) throws RemoteException;

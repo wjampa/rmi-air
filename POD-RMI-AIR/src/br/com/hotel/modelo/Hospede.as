@@ -7,7 +7,7 @@ package br.com.hotel.modelo
 	[RemoteClass(alias="br.com.hotel.modelo.Hospede")]
 	public class Hospede
 	{
-		public var nome:String;
+		public var nome:String; 
 		public var telefone:String;
 		public var endereco:String;
 		public var cpf:String;

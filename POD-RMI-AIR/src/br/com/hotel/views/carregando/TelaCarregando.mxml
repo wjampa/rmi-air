@@ -7,7 +7,7 @@
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
 	<mx:ProgressBar 
-		labelPlacement="top"
+		labelPlacement="top" 
 		id="barraProgresso" x="10" y="15" 
 		width="380" indeterminate="true"/>
 </mx:Canvas>

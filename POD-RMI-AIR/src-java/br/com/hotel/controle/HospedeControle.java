@@ -24,7 +24,7 @@ public class HospedeControle {
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		}
-		return hospedes;
+		return hospedes; 
 	}
 	public Hospede adicionarHospede(Hospede hospede){
 		//servico = Servico.getServico();
