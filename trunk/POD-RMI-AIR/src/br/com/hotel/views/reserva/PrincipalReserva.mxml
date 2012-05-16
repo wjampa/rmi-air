@@ -28,12 +28,16 @@
 			
 			public var hotel:Hotel = new Hotel();
 			[Bindable]
+			public var dpDatasReservas:ArrayCollection = new ArrayCollection();
+			[Bindable]
 			public var dpReservas:ArrayCollection = new ArrayCollection();
 			[Bindable]
 			public var reserva:Reserva = new Reserva();
 			public var dataFormatada:DateFormatter = new DateFormatter();
 			protected function inicializar(event:FlexEvent):void
 			{
+				FlexGlobals.topLevelApplication.textoCarregando = "Buscando Hoteis...";
+				FlexGlobals.topLevelApplication.abrirCarregando();
 				Alert.yesLabel = "SIM";
 				Alert.noLabel = "NÃO";
 				dpReservas.removeAll();
@@ -45,6 +49,7 @@
 				
 			}
 			public function listaHoteisResult(event:ResultEvent):void{
+				FlexGlobals.topLevelApplication.fecharCarregando();
 				var hotel:Hotel = new Hotel();
 				hotel.nome = "Selecione um hotel";
 				
@@ -55,8 +60,10 @@
 			protected function selecionarHotel(event:ListEvent):void
 			{
 				FlexGlobals.topLevelApplication.objHotelSelecionado = cbHotel.selectedItem as Hotel;
-					dpReservas.removeAll();
+				dpReservas = new ArrayCollection();
+				dpDatasReservas = new ArrayCollection();
 				for each(var r:Reserva in FlexGlobals.topLevelApplication.objHotelSelecionado.reservas){
+					dpDatasReservas.addItem(r.dataInicio);
 					dpReservas.addItem(r);
 				}
 				calendario.enabled = true;
@@ -357,14 +364,19 @@
 	<s:Label x="161" y="469" text="Hospedagem"/>
 	<s:Label x="429" y="118" text="Período de estadia:"/>
 	<mx:DateField 
+		monthNames="{FlexGlobals.topLevelApplication.meses}"
 		toolTip="Selecione a data inicial"
 		formatString="DD/MM/YYYY"
+		selectableRange="{{rangeStart: new Date()}}"
+		
 		id="campoDataInicio" x="429" y="149" width="111"/>
 	<mx:HRule x="429" y="138" width="261" height="3"/>
 	<s:Label x="556" y="155" text="a"/>
 	<mx:DateField 
+		monthNames="{FlexGlobals.topLevelApplication.meses}"
 		toolTip="Selecione a data final"
 		formatString="DD/MM/YYYY"
+		selectableRange="{{rangeStart: campoDataInicio.selectedDate}}"
 		id="campoDataFim" x="579" y="149" width="111"/>
 	<s:Label x="210" y="120" text="Tipo de estadia:"/>
 	<mx:HRule x="210" y="138" width="200" height="3"/>

@@ -1,7 +1,9 @@
 package br.com.hotel.rmi.cliente;
 import java.rmi.Naming;
+import java.util.List;
 
 import br.com.hotel.modelo.Hospede;
+import br.com.hotel.modelo.Hotel;
 import br.com.hotel.servico.IredeHoteleira;
 
 
@@ -20,8 +22,15 @@ public class AppCliente {
 			/*
 			 * Cadastro de hospde teste
 			 */
-			
-			hospede.setCpf("123098");
+			while(true){
+				System.out.println("já");
+			List<Hospede> hs = servico.buscarHopedeNome(" ");
+			for(Hospede h:hs){
+				System.out.println(h.getNome());
+			}
+			System.out.println("já Fim");
+			}
+			/*hospede.setCpf("123098");
 			hospede.setNome("Wagner de Souza Silva");
 			hospede.setEndereco("Rua sei la");
 			hospede.setTelefone("96502332");

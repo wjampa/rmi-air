@@ -24,6 +24,8 @@
 			
 			protected function buscarHospde(event:MouseEvent):void
 			{
+				FlexGlobals.topLevelApplication.textoCarregando = "Buscando hospedes...";
+				FlexGlobals.topLevelApplication.abrirCarregando();
 				if(campoNome.text != ''){
 					FlexGlobals.topLevelApplication.getListHospedeNome.addEventListener(ResultEvent.RESULT,buscarHospdeResult);
 					FlexGlobals.topLevelApplication.hospedeControle.buscarHospedeNome(campoNome.text);
@@ -33,10 +35,12 @@
 					FlexGlobals.topLevelApplication.hospedeControle.buscarHospedeCPF(campoCPF.text);
 						
 				}else{
+					FlexGlobals.topLevelApplication.fecharCarregando();
 					Alert.show("Necessário o preenchimento do campo \"Nome\" ou \"CPF\"","ATENÇÃO!");
 				}
 			}
 			protected function buscarHospdeResult(event:ResultEvent):void{
+				FlexGlobals.topLevelApplication.fecharCarregando();
 				
 				dpHospedes = new ArrayCollection();
 				desabilitarBotoes();

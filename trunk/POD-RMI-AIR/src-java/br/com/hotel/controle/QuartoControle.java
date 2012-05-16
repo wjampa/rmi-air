@@ -9,6 +9,7 @@ import br.com.hotel.servico.IredeHoteleira;
 public class QuartoControle {
 
 	private static IredeHoteleira servico;
+	
 	public QuartoControle() {
 		super();
 		servico = Servico.getServico();
