@@ -18,8 +18,9 @@
 			[Bindable]
 			public var hospede:Hospede = new Hospede();
 			
-			protected function gravarHospede(event:MouseEvent):void
+			protected function gravarHospede():void
 			{
+				FlexGlobals.topLevelApplication.abrirCarregando();
 				var cpfAnterior:String = FlexGlobals.topLevelApplication.objHospedeSelecionado.cpf;
 				if(btGravar.label != 'Alterar'){
 					FlexGlobals.topLevelApplication.getGravarHospede.addEventListener(ResultEvent.RESULT,adicionarHospedeResult);
@@ -31,6 +32,7 @@
 			}
 			
 			public function adicionarHospedeResult(event:ResultEvent):void{
+				FlexGlobals.topLevelApplication.fecharCarregando();
 				FlexGlobals.topLevelApplication.objHospedeSelecionado = event.result as Hospede;
 				Alert.show("Hospede Cadastrado com Sucesso!","ATENÇÃO");
 				FlexGlobals.topLevelApplication.fechar(this);
@@ -84,6 +86,6 @@
 				   click="FlexGlobals.topLevelApplication.fechar(this)"/>
 		<mx:Button id="btGravar" x="411" y="10" width="103" label="Gravar"
 				   icon="{Imagens.confirmar}"
-				   click="gravarHospede(event)"/>
+				   click="{btGravar;gravarHospede();}"/>
 	</mx:Canvas>
 </mx:TitleWindow>

@@ -4,6 +4,7 @@ import java.rmi.RemoteException;
 import java.rmi.server.RMIClientSocketFactory;
 import java.rmi.server.RMIServerSocketFactory;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -19,10 +20,7 @@ public class SRedeHoteleria extends UnicastRemoteObject implements
 
 
 	private static final long serialVersionUID = 1L;
-	private boolean bloqueado = false;
-	
 	private DAOArquivo arquivoDao;
-	
 	public SRedeHoteleria() throws RemoteException {
 		arquivoDao = new DAOArquivo("banco.db");
 	}
@@ -38,7 +36,7 @@ public class SRedeHoteleria extends UnicastRemoteObject implements
 	}
 
 	@Override
-	public synchronized String verificarReserva(String codigoHotel, Date dataInicio,
+	public String verificarReserva(String codigoHotel, Date dataInicio,
 			Date dataFim) throws RemoteException {
 		// TODO Auto-generated method stub
 		return null;
@@ -46,28 +44,13 @@ public class SRedeHoteleria extends UnicastRemoteObject implements
 
 
 	@Override
-	public synchronized boolean efetuarHospedagem(Hotel hotel, Reserva reserva)
-			throws Exception {
-		if(!bloqueado){
-			bloqueado = true;
-			try {
-				wait();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-				throw new Exception("Tentando acessar o banco...");
-			}
-			if(arquivoDao.efetuarHospedagem(hotel, reserva)){
-				bloqueado = false;
-				notifyAll();
-				return true;
-			}
-				
-		}
-		return bloqueado;
+	public boolean efetuarHospedagem(Hotel hotel, Reserva reserva)
+			throws RemoteException {
+		return arquivoDao.efetuarHospedagem(hotel, reserva);
 	}
 
 	@Override
-	public synchronized String fecharHospedagem(String codigoHotel, String cpfHospede,
+	public String fecharHospedagem(String codigoHotel, String cpfHospede,
 			boolean pago) throws RemoteException {
 		return null;
 	}
@@ -119,7 +102,7 @@ public class SRedeHoteleria extends UnicastRemoteObject implements
 	}
 
 	@Override
-	public  synchronized boolean excluirHotel(Hotel hotel) throws RemoteException {
+	public synchronized boolean excluirHotel(Hotel hotel) throws RemoteException {
 		return arquivoDao.excluirHotel(hotel);
 	}
 	/*
@@ -146,7 +129,9 @@ public class SRedeHoteleria extends UnicastRemoteObject implements
 	}
 	@Override
 	public synchronized List<Hospede> buscarHopedeNome(String nome) throws RemoteException {
+		
 		return arquivoDao.buscarHospedeNome(nome);
+		
 	}
 
 	@Override
@@ -164,4 +149,7 @@ public class SRedeHoteleria extends UnicastRemoteObject implements
 	public synchronized boolean excluirHospede(Hospede hospede) throws RemoteException {
 		return arquivoDao.excluirHospede(hospede);
 	}
+
+
+
 }
